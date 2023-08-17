@@ -24,7 +24,7 @@ void Graphics::RenderFrame()
     
     this->deviceContext->IASetInputLayout(this->vertexshader.GetInputLayout());
     this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+    this->deviceContext->RSSetState(this->rasterizerState.Get());
     this->deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
     this->deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
@@ -109,7 +109,20 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
     viewport.Width = width;
     viewport.Height = height;
 
+    //Set Viewport
     this->deviceContext->RSSetViewports(1, &viewport);
+
+    //Rasterizer State
+    D3D11_RASTERIZER_DESC rasterizerDesc;
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+    rasterizerDesc.CullMode = D3D11_CULL_NONE;
+    hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
+    if (hr != S_OK) {
+        ErrorLogger::Log(hr, "Failed to create rasterizer state");
+        return false;
+    }
 
     return true;
 }
@@ -159,8 +172,8 @@ bool Graphics::InitializeShaders()
 bool Graphics::IntiializeScene()
 {
     Vertex v[] = {
-        Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f),
         Vertex(0.0f,0.5f,0.0f,1.0f,0.0f),
+        Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f),
         Vertex(0.5f,-0.5f,0.0f,0.0f,1.0f),
     };
 
