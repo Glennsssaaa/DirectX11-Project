@@ -19,7 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="StringConverter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ErrorLogger.h" />
+    <ClInclude Include="StringConverter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
