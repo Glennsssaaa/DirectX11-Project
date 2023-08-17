@@ -33,7 +33,7 @@ bool RenderWindow::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInst
 	SetForegroundWindow(this->handle);
 	SetFocus(this->handle);
 
-	return false;
+	return true;
 }
 
 RenderWindow::~RenderWindow() {
@@ -48,11 +48,12 @@ bool RenderWindow::ProcessMessages() {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 
-	if (PeekMessage(&msg, //Message Storage Location
+	while (PeekMessage(&msg, //Message Storage Location
 		this->handle, //Window Handle
 		0, ///Msg Value Max
 		0, //Msg Value Max
-		PM_REMOVE)) { //Remove Message after capture
+		PM_REMOVE)) //Remove Message after capture
+	{ 
 		TranslateMessage(&msg); //Translate from virtual key into char
 		DispatchMessage(&msg); //Dispatch to window proc
 	}
@@ -66,6 +67,11 @@ bool RenderWindow::ProcessMessages() {
 	}
 
 	return true;
+}
+
+HWND RenderWindow::GetHWND() const
+{
+	return this->handle;
 }
 
 LRESULT CALLBACK HandleMsgRedirect(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
