@@ -19,6 +19,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
+    //Declare States
     float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
     this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
     this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -34,10 +35,11 @@ void Graphics::RenderFrame()
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
 
-    //red tri
+    //Draw Shape
     this->deviceContext->PSSetShaderResources(0,1,this->testTexture.GetAddressOf());
     this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
-    this->deviceContext->Draw(6, 0);
+    this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+    this->deviceContext->DrawIndexed(6, 0,0);
  
     //Draw Text
     spriteBatch->Begin();
@@ -246,17 +248,20 @@ bool Graphics::InitializeShaders()
 
 bool Graphics::IntiializeScene()
 {
-    //tri 1
+    //Create Shape
     Vertex v[] = {
-        Vertex(-0.5f,-0.5f,1.0f,  0.0f,1.0f), //bottom left
-        Vertex(-0.5f,0.5f,1.0f, 0.0f,0.0f), //top left
-        Vertex(0.5f,0.5f,1.0f, 1.0f,0.0f), //top right
-
-        Vertex(-0.5f,-0.5f,1.0f, 0.0f,1.0f), //bottom left
-        Vertex(0.5f,0.5f,1.0f, 1.0f,0.0f), //top right
-        Vertex(0.5f,-0.5f,1.0f, 1.0f,1.0f), //bottom right
+        Vertex(-0.5f,-0.5f,1.0f,  0.0f,1.0f), //bottom left - [0]
+        Vertex(-0.5f,0.5f,1.0f, 0.0f,0.0f), //top left - [1]
+        Vertex(0.5f,0.5f,1.0f, 1.0f,0.0f), //top right - [2]
+        Vertex(0.5f,-0.5f,1.0f, 1.0f,1.0f), //bottom right - [3]
     };
 
+    DWORD indices[] = {
+        0,1,2,
+        0,2,3
+    };
+
+    //Create Vertex Buffer
     D3D11_BUFFER_DESC vertexBufferDesc;
     ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
@@ -275,6 +280,24 @@ bool Graphics::IntiializeScene()
         return false;
     }
 
+    //Load Index Data 
+    D3D11_BUFFER_DESC indexBufferDesc;
+    ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+    indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    indexBufferDesc.ByteWidth = sizeof(DWORD) * ARRAYSIZE(indices);
+    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    indexBufferDesc.CPUAccessFlags = 0;
+    indexBufferDesc.MiscFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA indexBufferData;
+    indexBufferData.pSysMem = indices;
+    hr = device->CreateBuffer(&indexBufferDesc, &indexBufferData, indicesBuffer.GetAddressOf());
+    if (FAILED(hr)) {
+        ErrorLogger::Log(hr, "Failed to create indices buffer");
+        return hr;
+    }
+
+    //Load Texture
     hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\DK.png", nullptr, testTexture.GetAddressOf());
     if (FAILED(hr)) {
         ErrorLogger::Log(hr, "Failed to create wic texture from file");
