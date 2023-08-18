@@ -19,9 +19,6 @@
     <Filter Include="Source Files\Keyboard">
       <UniqueIdentifier>{76d294a7-0f78-4ec2-bb9e-f167f92c0dc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Mouse">
-      <UniqueIdentifier>{edca52d4-89da-4a30-8256-5d502ef3aae9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Mouse">
       <UniqueIdentifier>{5c182aaa-2d44-4a64-a2eb-eb9bd7b04481}</UniqueIdentifier>
     </Filter>
@@ -31,12 +28,12 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{18d0496d-eaea-4b17-8827-691996991d75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Mouse">
+      <UniqueIdentifier>{edca52d4-89da-4a30-8256-5d502ef3aae9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StringConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ErrorLogger.cpp">
@@ -70,6 +67,9 @@
       <Filter>Source Files\Mouse</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Shaders.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="StringConverter.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,6 +111,18 @@
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Shaders.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VertexBuffer.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\IndexBuffer.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ConstantBufferTypes.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ConstantBuffer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
