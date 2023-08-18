@@ -1,19 +1,15 @@
 #pragma once
 #include "AdapterReader.h"
 #include "Shaders.h"
-#include "Vertex.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "ConstantBufferTypes.h"
-#include "ConstantBuffer.h"
 #include "Camera.h"
 #include "..\\Utility\\Timer.h"
 #include "ImGui/imgui.h"
 #include "ImGui\\imgui_impl_win32.h"
 #include "ImGui\\imgui_impl_dx11.h"
+#include "Model.h"
 
 class Graphics
 {
@@ -21,6 +17,7 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	Camera camera;
+	Model testModel;
 
 private:
 	bool InitializeDirectX(HWND hwnd);
@@ -35,8 +32,6 @@ private:
 	VertexShader vertexshader;
 	PixelShader pixelshader;
 
-	VertexBuffer<Vertex> vertexBuffer;
-	IndexBuffer indicesBuffer;
 	ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
 	ConstantBuffer<CB_PS_pixelshader> cb_ps_pixelshader;
 

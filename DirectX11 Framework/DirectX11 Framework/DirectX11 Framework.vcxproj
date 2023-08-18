@@ -22,6 +22,7 @@
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\AdapterReader.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\AdapterReader.h" />
