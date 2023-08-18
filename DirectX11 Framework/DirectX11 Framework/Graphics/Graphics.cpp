@@ -17,6 +17,14 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
         return false;
     }
 
+    //ImGui setup
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX11_Init(this->device.Get(), this->deviceContext.Get());
+    ImGui::StyleColorsDark();
+
     return true;
 }
 
@@ -38,7 +46,13 @@ void Graphics::RenderFrame()
     UINT offset = 0;
 
     //Create World Matrix
-    DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+    static float translationOffset[3] = { 0,0,0 };
+    static float scaleOffset[3] = { 0,0,0 };
+    static float rotationOffset[3] = { 0,0,0 };
+
+    DirectX::XMMATRIX world = XMMatrixRotationRollPitchYaw(rotationOffset[0], rotationOffset[1], rotationOffset[2]) +
+        XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2])     + 
+       XMMatrixScaling(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
 
     //Update Constant Buffer 
     constantBuffer.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
@@ -69,6 +83,17 @@ void Graphics::RenderFrame()
     spriteBatch->Begin();
     spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
     spriteBatch->End();
+
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    ImGui::Begin("Test");
+    ImGui::DragFloat3("Translation X/Y/Z", translationOffset, 0.1f, -5.0f, 5.0f);
+    ImGui::DragFloat3("Scale X/Y/Z", scaleOffset, 0.1f, -5.0f, 5.0f);
+    ImGui::DragFloat3("Rotation X/Y/Z", rotationOffset , 0.1f, 0.0f, 6.0f);
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     //Enable VSYNC - 1
     this->swapchain->Present(1, NULL);
