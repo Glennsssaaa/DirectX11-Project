@@ -4,6 +4,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 {
     this->windowWidth = width;
     this->windowHeight = height;
+    this->fpsTimer.Start();
     if (!InitializeDirectX(hwnd)) {
         return false;
     }
@@ -56,10 +57,20 @@ void Graphics::RenderFrame()
     this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
  
     //Draw Text
+    static int fpsCounter = 0;
+    static std::string fpsString = "FPS: 0";
+    fpsCounter += 1;
+    if (fpsTimer.GetMillisecondsElapsed() > 1000.0) {
+        fpsString = "FPS: " + std::to_string(fpsCounter);
+        fpsCounter = 0;
+        fpsTimer.Restart();
+    }
+
     spriteBatch->Begin();
-    spriteFont->DrawString(spriteBatch.get(), L"Hello World", DirectX::XMFLOAT2(0,0),DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+    spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
     spriteBatch->End();
 
+    //Enable VSYNC - 1
     this->swapchain->Present(1, NULL);
 }
 
