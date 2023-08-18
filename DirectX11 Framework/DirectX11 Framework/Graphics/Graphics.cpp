@@ -30,6 +30,8 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
+    static bool enableWireframe = false;
+
     //Declare States
     float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
     this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
@@ -37,7 +39,13 @@ void Graphics::RenderFrame()
 
     this->deviceContext->IASetInputLayout(this->vertexshader.GetInputLayout());
     this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    this->deviceContext->RSSetState(this->rasterizerState.Get());
+
+    if (enableWireframe) {
+        this->deviceContext->RSSetState(this->rasterizerState_Wireframe.Get());
+    }
+    else if(!enableWireframe){
+        this->deviceContext->RSSetState(this->rasterizerState.Get());
+    }
     this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
     this->deviceContext->OMSetBlendState(this->blendState.Get(), NULL, 0xFFFFFFFF);
     this->deviceContext->PSSetSamplers(0, 1, this->samplerState.GetAddressOf());
@@ -134,9 +142,6 @@ void Graphics::RenderFrame()
         this->deviceContext->PSSetShaderResources(0, 1, this->brickTexture.GetAddressOf());
         this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
         this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-        this->deviceContext->RSSetState(this->rasterizerState_CullFront.Get());
-        this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-        this->deviceContext->RSSetState(this->rasterizerState.Get());
         this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
     }
     //Draw Text
@@ -153,8 +158,6 @@ void Graphics::RenderFrame()
     spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
     spriteBatch->End();
 
-    static bool enableWireframe = false;
-
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -163,10 +166,10 @@ void Graphics::RenderFrame()
     ImGui::DragFloat3("Scale X/Y/Z", scaleOffset, 0.1f, 0.0f, 50.0f);
     ImGui::DragFloat3("Rotation X/Y/Z", rotationOffset , 0.1f, 0.0f, 6.0f);
     ImGui::DragFloat("Alpha", &alphaValue, 0.01f, 0.0f, 1.0f);
+    ImGui::Checkbox("Enable Wireframe", &enableWireframe);
     ImGui::End();
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
     //Enable VSYNC - 1
     this->swapchain->Present(1, NULL);
 }
@@ -297,6 +300,17 @@ bool Graphics::InitializeDirectX(HWND hwnd)
     rasterizerDesc.FillMode = D3D11_FILL_SOLID;
     rasterizerDesc.CullMode = D3D11_CULL_BACK;
     hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
+    if (hr != S_OK) {
+        ErrorLogger::Log(hr, "Failed to create rasterizer state");
+        return false;
+    }
+
+    //Wireframe Rasterizer State
+    D3D11_RASTERIZER_DESC rasterizerDesc_Wireframe;
+    ZeroMemory(&rasterizerDesc_Wireframe, sizeof(D3D11_RASTERIZER_DESC));
+    rasterizerDesc_Wireframe.CullMode = D3D11_CULL_BACK;
+    rasterizerDesc_Wireframe.FillMode = D3D11_FILL_WIREFRAME;
+    hr = this->device->CreateRasterizerState(&rasterizerDesc_Wireframe, this->rasterizerState_Wireframe.GetAddressOf());
     if (hr != S_OK) {
         ErrorLogger::Log(hr, "Failed to create rasterizer state");
         return false;

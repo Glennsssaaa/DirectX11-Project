@@ -10,7 +10,7 @@
 #include "ConstantBufferTypes.h"
 #include "ConstantBuffer.h"
 #include "Camera.h"
-#include "..\\Timer.h"
+#include "..\\Utility\\Timer.h"
 #include "ImGui/imgui.h"
 #include "ImGui\\imgui_impl_win32.h"
 #include "ImGui\\imgui_impl_dx11.h"
@@ -46,6 +46,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_CullFront;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_Wireframe;
 	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
 
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
