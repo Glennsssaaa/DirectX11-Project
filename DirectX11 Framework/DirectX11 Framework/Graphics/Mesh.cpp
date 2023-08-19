@@ -1,9 +1,11 @@
 #include "Mesh.h"
 
-Mesh::Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<Vertex>& vertices, std::vector<DWORD>& indices, std::vector<Texture>& textures)
+Mesh::Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<Vertex>& vertices, std::vector<DWORD>& indices, std::vector<Texture>& textures, const DirectX::XMMATRIX& transformMatrix)
 {
 	this->deviceContext = deviceContext;
 	this->textures = textures;
+	this->transformMatrix = transformMatrix;
+	
 	HRESULT hr = this->vertexBuffer.Initialize(device, vertices.data(), vertices.size());
 	COM_ERROR_IF_FAILED(hr, "Failed to initialize vertex buffer for mesh.");
 	
@@ -16,6 +18,7 @@ Mesh::Mesh(const Mesh& mesh)
 	this->vertexBuffer = mesh.vertexBuffer;
 	this->indexBuffer = mesh.indexBuffer;
 	this->textures = mesh.textures;
+	this->transformMatrix = mesh.transformMatrix;
 }
 
 void Mesh::Draw()
@@ -35,4 +38,9 @@ void Mesh::Draw()
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	this->deviceContext->DrawIndexed(this->indexBuffer.indexCount(), 0, 0);
 
+}
+
+const DirectX::XMMATRIX& Mesh::GetTransformMatrix()
+{
+	return this->transformMatrix;
 }

@@ -21,13 +21,13 @@ bool Model::Initialize(const std::string& filepath, ID3D11Device* device, ID3D11
 
 void Model::Draw(const XMMATRIX& worldMatrix, const XMMATRIX& viewProjectionMatrix)
 {
-    this->cb_vs_vertexshader->data.mat = worldMatrix * viewProjectionMatrix;
-    this->cb_vs_vertexshader->data.mat = XMMatrixTranspose(this->cb_vs_vertexshader->data.mat);
-    this->cb_vs_vertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cb_vs_vertexshader->GetAddressOf());
 
 	for (int i = 0; i < meshes.size(); i++)
 	{
+		this->cb_vs_vertexshader->data.mat = meshes[i].GetTransformMatrix() * worldMatrix * viewProjectionMatrix;
+		this->cb_vs_vertexshader->data.mat = XMMatrixTranspose(this->cb_vs_vertexshader->data.mat);
+		this->cb_vs_vertexshader->ApplyChanges();
 		meshes[i].Draw();
 	}
 }
@@ -40,22 +40,23 @@ bool Model::LoadModel(const std::string& filepath)
 	if (pScene == nullptr) {
 		return false;
 	}
-	this->ProcessNode(pScene->mRootNode, pScene);
+	this->ProcessNode(pScene->mRootNode, pScene, XMMatrixIdentity());
 	return true;
 }
 
-void Model::ProcessNode(aiNode* node, const aiScene* scene)
+void Model::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix)
 {
+	XMMATRIX transformMatrix = XMMatrixTranspose(XMMATRIX(&node->mTransformation.a1)) * parentTransformMatrix;
 	for (UINT i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(this->ProcessMesh(mesh, scene));
+		meshes.push_back(this->ProcessMesh(mesh, scene, transformMatrix));
 	}
 	for (UINT i = 0; i < node->mNumChildren; i++) {
-		this->ProcessNode(node->mChildren[i], scene);
+		this->ProcessNode(node->mChildren[i], scene, transformMatrix);
 	}
 }
 
-Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix)
 {
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
@@ -86,7 +87,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Texture> diffuseTextures = LoadMaterialTextures(material, aiTextureType_DIFFUSE, scene);
 	textures.insert(textures.end(), diffuseTextures.begin(), diffuseTextures.end());
 
-	return Mesh(this->device, this->deviceContext, vertices, indices, textures);
+	return Mesh(this->device, this->deviceContext, vertices, indices, textures, transformMatrix);
 }
 
 std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* pMaterial, aiTextureType textureType, const aiScene* pScene)
