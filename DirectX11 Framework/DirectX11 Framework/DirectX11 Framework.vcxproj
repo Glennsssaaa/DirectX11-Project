@@ -19,11 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\Colour.cpp" />
+    <ClCompile Include="Graphics\GameObject.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\AdapterReader.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -39,13 +42,16 @@
     <ClCompile Include="Engine\RenderWindow.cpp" />
     <ClCompile Include="Graphics\Shaders.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Utility\StringConverter.cpp" />
+    <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\GameObject.h" />
+    <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\Mesh.h" />
+    <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\AdapterReader.h" />
@@ -69,7 +75,7 @@
     <ClInclude Include="Mouse\MouseEvent.h" />
     <ClInclude Include="Engine\RenderWindow.h" />
     <ClInclude Include="Graphics\Shaders.h" />
-    <ClInclude Include="Utility\StringConverter.h" />
+    <ClInclude Include="Utility\StringHelper.h" />
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\VertexBuffer.h" />
     <ClInclude Include="Utility\Timer.h" />

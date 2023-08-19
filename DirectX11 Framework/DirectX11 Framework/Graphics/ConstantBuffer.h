@@ -26,7 +26,7 @@ public:
 		return buffer.GetAddressOf();
 	}
 
-	UINT BufferSize() const {
+	UINT vertexCount() const {
 		return this->bufferSize;
 	}
 

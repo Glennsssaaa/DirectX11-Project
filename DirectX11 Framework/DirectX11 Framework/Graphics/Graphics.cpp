@@ -135,7 +135,7 @@ void Graphics::RenderFrame()
     }
 
     spriteBatch->Begin();
-    spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+    spriteFont->DrawString(spriteBatch.get(), StringHelper::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
     spriteBatch->End();
 
     ImGui_ImplDX11_NewFrame();
@@ -345,9 +345,6 @@ bool Graphics::IntiializeScene()
     hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\brick.jpg", nullptr, brickTexture.GetAddressOf());
     COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
     
-    hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\cowBase.png", nullptr, cowTexture.GetAddressOf());
-    COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
-
     //Initialize vertex shader constant buffer
     hr = this->cb_vs_vertexshader.Initialize(this->device.Get(), this->deviceContext.Get());
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
@@ -357,9 +354,8 @@ bool Graphics::IntiializeScene()
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
     //initialize models
-	if (!testModel.Initialize("Data\\Objects\\cow.obj",this->device.Get(), this->deviceContext.Get(), this->cowTexture.Get(), cb_vs_vertexshader)) {
+    if (!testModel.Initialize("Data\\Objects\\Samples\\orange_disktexture.fbx", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
         return false;
-    }
     
     camera.SetPosition(0.0f, 0.0f, -2.0f);
     camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);

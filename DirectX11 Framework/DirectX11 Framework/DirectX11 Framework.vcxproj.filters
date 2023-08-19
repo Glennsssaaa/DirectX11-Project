@@ -75,7 +75,7 @@
     <ClCompile Include="Graphics\Shaders.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Utility\StringConverter.cpp">
+    <ClCompile Include="Utility\StringHelper.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Camera.cpp">
@@ -118,6 +118,15 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Mesh.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObject.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Colour.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,7 +200,7 @@
     <ClInclude Include="Utility\ErrorLogger.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\StringConverter.h">
+    <ClInclude Include="Utility\StringHelper.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Timer.h">
@@ -210,6 +219,15 @@
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Mesh.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Colour.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObject.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
