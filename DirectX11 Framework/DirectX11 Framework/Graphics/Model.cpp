@@ -126,9 +126,9 @@ std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* pMaterial, aiTextur
 	}
 
 	if (materialTextures.size() == 0) {
-		materialTextures.push_back(Texture(this->device, Colours::UnhandledTextureColour, textureType));
-		return materialTextures;
+		materialTextures.push_back(Texture(this->device, Colours::UnhandledTextureColour, aiTextureType::aiTextureType_DIFFUSE));
 	}
+	return materialTextures;
 }
 
 TextureStorageType Model::DetermineTextureStorageType(const aiScene* pScene, aiMaterial* pMaterial, unsigned int i, aiTextureType textureType)

@@ -33,6 +33,7 @@ public:
 	const XMVECTOR& GetRightVector();
 	const XMVECTOR& GetBackwardVector();
 	const XMVECTOR& GetLeftVector();
+
 private:
 	Model model;
 	void UpdateWorldMatrix();

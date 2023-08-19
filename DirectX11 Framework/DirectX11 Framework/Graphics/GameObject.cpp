@@ -9,7 +9,7 @@ bool GameObject::Initialize(const std::string & filepath, ID3D11Device * device,
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
-	//this->SetScale(1.0f, 1.0f, 1.0f);
+	this->SetScale(1.0f, 1.0f, 1.0f);
 	this->UpdateWorldMatrix();
 	return true;
 }
