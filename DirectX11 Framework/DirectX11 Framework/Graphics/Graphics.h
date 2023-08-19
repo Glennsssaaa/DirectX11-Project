@@ -51,7 +51,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> kongTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> grassTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> brickTexture;
-
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cowTexture;
 
 	int windowWidth = 0;
 	int windowHeight = 0;

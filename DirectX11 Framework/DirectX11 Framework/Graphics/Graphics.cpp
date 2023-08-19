@@ -123,6 +123,7 @@ void Graphics::RenderFrame()
 		this->testModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
     }
+    
     //Draw Text
     static int fpsCounter = 0;
     static std::string fpsString = "FPS: 0";
@@ -343,6 +344,9 @@ bool Graphics::IntiializeScene()
 
     hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\brick.jpg", nullptr, brickTexture.GetAddressOf());
     COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
+    
+    hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\cowBase.png", nullptr, cowTexture.GetAddressOf());
+    COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
     //Initialize vertex shader constant buffer
     hr = this->cb_vs_vertexshader.Initialize(this->device.Get(), this->deviceContext.Get());
@@ -353,7 +357,7 @@ bool Graphics::IntiializeScene()
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
     //initialize models
-	if (!testModel.Initialize(this->device.Get(), this->deviceContext.Get(), this->brickTexture.Get(), cb_vs_vertexshader)) {
+	if (!testModel.Initialize("Data\\Objects\\cow.obj",this->device.Get(), this->deviceContext.Get(), this->cowTexture.Get(), cb_vs_vertexshader)) {
         return false;
     }
     
