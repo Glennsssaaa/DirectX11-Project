@@ -6,6 +6,10 @@ struct CB_VS_vertexshader {
 	DirectX::XMMATRIX worldMatrix;
 };
 
+struct CB_VS_vertexshader_2d {
+	DirectX::XMMATRIX wvpMatrix;
+};
+
 struct CB_PS_light {
 	DirectX::XMFLOAT3 ambientLightColour;
 	float ambientLightStrength;

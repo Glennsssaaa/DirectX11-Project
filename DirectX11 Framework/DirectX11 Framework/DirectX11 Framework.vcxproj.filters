@@ -159,6 +159,12 @@
     <ClCompile Include="Graphics\GameObjects\RenderableGameObject.cpp">
       <Filter>Source Files\Graphics\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\Camera2D.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse\MouseClass.h">
@@ -272,6 +278,12 @@
     <ClInclude Include="Graphics\Utility\Texture.h">
       <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\Camera2D.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\vertexshader.hlsl">
@@ -283,5 +295,7 @@
     <FxCompile Include="Shaders\pixelshader_nolight.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\vertexshader_2d.hlsl" />
+    <FxCompile Include="Shaders\pixelshader_2d.hlsl" />
   </ItemGroup>
 </Project>

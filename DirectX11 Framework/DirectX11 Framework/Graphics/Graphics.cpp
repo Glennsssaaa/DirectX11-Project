@@ -123,6 +123,11 @@ void Graphics::RenderFrame()
         }
     }
 
+	deviceContext->IASetInputLayout(vertexshader_2d.GetInputLayout());
+    deviceContext->PSSetShader(pixelshader_2d.GetShader(), NULL, 0);
+	deviceContext->VSSetShader(vertexshader_2d.GetShader(), NULL, 0);
+	sprite.Draw(camera2D.GetWorldMatrix() * camera2D.GetOrthoMatrix());
+
 
     //Draw Text
     static int fpsCounter = 0;
@@ -324,17 +329,16 @@ bool Graphics::InitializeShaders()
 #endif
     }
 
-
-
-    D3D11_INPUT_ELEMENT_DESC layout[] = {
+    //3D Shaders 
+    D3D11_INPUT_ELEMENT_DESC layout3D[] = {
     {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
     {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA ,0},
     {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
     };
 
-    UINT numElements = ARRAYSIZE(layout);
+    UINT numElements3D = ARRAYSIZE(layout3D);
 
-    if (!vertexshader.Initialize(device, shaderfolder + L"vertexshader.cso", layout, numElements)) {
+    if (!vertexshader.Initialize(device, shaderfolder + L"vertexshader.cso", layout3D, numElements3D)) {
         return false;
     }
 
@@ -342,9 +346,25 @@ bool Graphics::InitializeShaders()
         return false;
     }
 
-	if (!pixelshader_nolight.Initialize(device, shaderfolder + L"pixelshader_nolight.cso")) {
-		return false;
-	}
+    if (!pixelshader_nolight.Initialize(device, shaderfolder + L"pixelshader_nolight.cso")) {
+        return false;
+    }
+
+    //2D Shaders
+    D3D11_INPUT_ELEMENT_DESC layout2D[] = {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA ,0},
+    };
+
+	UINT numElements2D = ARRAYSIZE(layout2D);
+    
+    if (!vertexshader_2d.Initialize(device, shaderfolder + L"vertexshader_2d.cso", layout2D, numElements2D)) {
+        return false;
+    }
+
+    if (!pixelshader_2d.Initialize(device, shaderfolder + L"pixelshader_2d.cso")) {
+        return false;
+    }
     
     return true;
 }
@@ -370,7 +390,10 @@ bool Graphics::IntiializeScene()
     //Initialize pixel shader constant buffer
     hr = cb_ps_light.Initialize(device.Get(), deviceContext.Get());
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
-
+    
+	hr = cb_vs_vertexshader_2d.Initialize(device.Get(), deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
+    
     cb_ps_light.data.ambientLightColour = XMFLOAT3(1,1,1);
 	cb_ps_light.data.ambientLightStrength = 1.0f;
 
@@ -387,12 +410,13 @@ bool Graphics::IntiializeScene()
     if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertexshader))
         return false;
 
-
+    if (!sprite.Initialize(this->device.Get(), this->deviceContext.Get(), 256, 256, "Data/Textures/DK.png", cb_vs_vertexshader_2d))
+        return false;
+        
     Camera3D.SetPosition(0.0f, 0.0f, -2.0f);
     Camera3D.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
 
-    Camera2D.SetPosition(windowWidth / 2.0f, windowHeight / 2.0f, 0.0f);
-	Camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
+	camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
 }
     catch (COMException & exception) {
         ErrorLogger::Log(exception);

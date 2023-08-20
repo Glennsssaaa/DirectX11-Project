@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\GameObjects\Camera2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject3D.cpp" />
     <ClCompile Include="Graphics\Utility\Colour.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="Graphics\Utility\Texture.cpp" />
     <ClCompile Include="Graphics\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Graphics\GameObjects\Light.cpp" />
+    <ClCompile Include="Graphics\GameObjects\Sprite.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -51,6 +53,7 @@
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\GameObjects\Camera2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject3D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject.h" />
@@ -60,6 +63,7 @@
     <ClInclude Include="Graphics\Utility\Texture.h" />
     <ClInclude Include="Graphics\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Graphics\GameObjects\Light.h" />
+    <ClInclude Include="Graphics\GameObjects\Sprite.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Graphics\GameObjects\Camera3D.h" />
     <ClInclude Include="Graphics\Utility\AdapterReader.h" />
@@ -90,6 +94,16 @@
     <ClInclude Include="Engine\WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\pixelshader_2d.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shaders\pixelshader_nolight.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -111,6 +125,16 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shaders\vertexshader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\vertexshader_2d.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

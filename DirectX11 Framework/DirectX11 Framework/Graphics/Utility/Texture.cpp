@@ -63,7 +63,7 @@ void Texture::InitializeColourTexture(ID3D11Device* device, const Colour* colour
 	ID3D11Texture2D* p2DTexture = nullptr;
 	D3D11_SUBRESOURCE_DATA initialData{};
 	initialData.pSysMem = colourData;
-	initialData.SysMemPitch = sizeof(Colour);
+	initialData.SysMemPitch = width * sizeof(Colour);
 	HRESULT hr = device->CreateTexture2D(&textureDesc, &initialData, &p2DTexture);
 	COM_ERROR_IF_FAILED(hr, "Failed to create texture from colour data");
 	texture = static_cast<ID3D11Resource*>(p2DTexture);

@@ -4,7 +4,7 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
-#include "..\\Graphics\\GameObjects\\Camera3D.h"
+#include "GameObjects/Camera3D.h"
 #include "..\\Utility\\Timer.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_win32.h"
@@ -12,6 +12,7 @@
 #include "GameObjects/RenderableGameObject.h"
 #include "GameObjects/Light.h"
 #include "GameObjects/Camera2D.h"
+#include "GameObjects/Sprite.h"
 
 class Graphics
 {
@@ -19,11 +20,12 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	Camera3D Camera3D;
-	Camera2D Camera2D;
+	Camera2D camera2D;
 	RenderableGameObject carModel;
 	RenderableGameObject nanosuitModel;
 	RenderableGameObject cowModel;
 	Light light;
+	Sprite sprite;
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -38,8 +40,13 @@ private:
 	PixelShader pixelshader;
 	PixelShader pixelshader_nolight;
 
+	PixelShader pixelshader_2d;
+	VertexShader vertexshader_2d;
+
 	ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
 	ConstantBuffer<CB_PS_light> cb_ps_light;
+	ConstantBuffer<CB_VS_vertexshader_2d> cb_vs_vertexshader_2d;
+
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
