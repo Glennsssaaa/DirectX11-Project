@@ -17,7 +17,9 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	Camera camera;
-	RenderableGameObject testModel;
+	RenderableGameObject carModel;
+	RenderableGameObject nanosuitModel;
+	RenderableGameObject cowModel;
 
 private:
 	bool InitializeDirectX(HWND hwnd);
@@ -33,7 +35,7 @@ private:
 	PixelShader pixelshader;
 
 	ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
-	ConstantBuffer<CB_PS_pixelshader> cb_ps_pixelshader;
+	ConstantBuffer<CB_PS_light> cb_ps_light;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;

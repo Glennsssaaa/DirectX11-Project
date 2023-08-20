@@ -31,7 +31,8 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 void Graphics::RenderFrame()
 {
     static bool enableWireframe = false;
-
+    this->cb_ps_light.ApplyChanges();
+	this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_light.GetAddressOf());
     //Declare States
     float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
     this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
@@ -54,76 +55,49 @@ void Graphics::RenderFrame()
 
     UINT offset = 0;
     static float translationOffset[3] = { 0,0,0 };
-    static float scaleOffset[3] = { 1,1,1 };
+    static float scaleOffset[3] = { 0.01,0.01,0.01 };
     static float rotationOffset[3] = { 0,0,0 };
 
-    //Opaque Objects
-    /*
-    { // Brick
-       //Create World Matrix
-        static float translationOffset[3] = { 0,0,4.0f };
-        static float scaleOffset[3] = { 5.0f,5.0f,5.0f };
-        static float rotationOffset[3] = { 0,0,0 };
-
-        DirectX::XMMATRIX world = XMMatrixScaling(scaleOffset[0], scaleOffset[1], scaleOffset[2]) * XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
-
-
-        //Update vertex shader constant buffer
-        cb_vs_vertexshader.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
-        cb_vs_vertexshader.data.mat = DirectX::XMMatrixTranspose(cb_vs_vertexshader.data.mat);
-        if (!cb_vs_vertexshader.ApplyChanges()) {
-            return;
-        }
-        this->deviceContext->VSSetConstantBuffers(0, 1, this->cb_vs_vertexshader.GetAddressOf());
-
-        //Update pixel shader constant buffer
-        cb_ps_pixelshader.data.alpha = 1.0f;
-        cb_ps_pixelshader.ApplyChanges();
-        this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_pixelshader.GetAddressOf());
-
-        //Draw Shape
-        this->deviceContext->PSSetShaderResources(0, 1, this->brickTexture.GetAddressOf());
-        this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-        this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-        this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-    }
-    { // Grass
-        //Create World Matrix
-        DirectX::XMMATRIX world = XMMatrixScaling(scaleOffset[0], scaleOffset[1], scaleOffset[2]) * XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
-
-        //Update vertex shader constant buffer
-        cb_vs_vertexshader.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
-        cb_vs_vertexshader.data.mat = DirectX::XMMatrixTranspose(cb_vs_vertexshader.data.mat);
-        if (!cb_vs_vertexshader.ApplyChanges()) {
-            return;
-        }
-        this->deviceContext->VSSetConstantBuffers(0, 1, this->cb_vs_vertexshader.GetAddressOf());
-
-        //Update pixel shader constant buffer
-        cb_ps_pixelshader.data.alpha = 1.0f;
-        cb_ps_pixelshader.ApplyChanges();
-        this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_pixelshader.GetAddressOf());
-
-        //Draw Shape
-        this->deviceContext->PSSetShaderResources(0, 1, this->grassTexture.GetAddressOf());
-        this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-        this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-        this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-    }*/
-
-
-    ///Transparent Objects
     static float alphaValue = 1.0f;
-    { // Kong
-        this->testModel.Draw(camera.GetViewMatrix()*camera.GetProjectionMatrix());
-		this->testModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
-		this->testModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
-		this->testModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
+    { // Car
+        scaleOffset[0] = 0.01;
+		scaleOffset[1] = 0.01;
+		scaleOffset[2] = 0.01;
+        translationOffset[0] = 15.0f;
+        translationOffset[1] = 0;
+        translationOffset[2] = 0;
+        this->carModel.Draw(camera.GetViewMatrix()*camera.GetProjectionMatrix());
+		this->carModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
+		this->carModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+		//this->carModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
     }
-    
+    { // Nanosuit
+        scaleOffset[0] = 1;
+        scaleOffset[1] = 1;
+        scaleOffset[2] = 1;
+        translationOffset[0] = -15.0f;
+        translationOffset[1] = 0;
+        translationOffset[2] = 0;
+        this->nanosuitModel.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+        this->nanosuitModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
+        this->nanosuitModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+       // this->nanosuitModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
+
+    } 
+    { // Cow
+        scaleOffset[0] = 0.05;
+        scaleOffset[1] = 0.05;
+        scaleOffset[2] = 0.05;
+		translationOffset[0] = 0;
+		translationOffset[1] = 0;
+		translationOffset[2] = 0;
+        this->cowModel.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+        this->cowModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
+        this->cowModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+      //  this->cowModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
+
+    }
     //Draw Text
     static int fpsCounter = 0;
     static std::string fpsString = "FPS: 0";
@@ -141,13 +115,19 @@ void Graphics::RenderFrame()
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    ImGui::Begin("Test");
+    ImGui::Begin("Object Controls");
     ImGui::DragFloat3("Translation X/Y/Z", translationOffset, 0.1f, -5.0f, 5.0f);
     ImGui::DragFloat3("Scale X/Y/Z", scaleOffset, 0.1f, 0.0f, 50.0f);
     ImGui::DragFloat3("Rotation X/Y/Z", rotationOffset , 0.1f, 0.0f, 6.0f);
     ImGui::DragFloat("Alpha", &alphaValue, 0.01f, 0.0f, 1.0f);
     ImGui::Checkbox("Enable Wireframe", &enableWireframe);
     ImGui::End();
+
+	ImGui::Begin("Light Controls");
+	ImGui::DragFloat3("Ambient Light Colour", &this->cb_ps_light.data.ambientLightColour.x, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("Ambient Light Strength", &this->cb_ps_light.data.ambientLightStrength, 0.01f, 0.0f, 1.0f);
+    ImGui::End();
+    
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     //Enable VSYNC - 1
@@ -314,8 +294,8 @@ bool Graphics::InitializeShaders()
 
     D3D11_INPUT_ELEMENT_DESC layout[] = {
     {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
-    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA ,0}
-
+    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA ,0},
+    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
     };
 
     UINT numElements = ARRAYSIZE(layout);
@@ -350,12 +330,22 @@ bool Graphics::IntiializeScene()
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
     //Initialize pixel shader constant buffer
-    hr = this->cb_ps_pixelshader.Initialize(this->device.Get(), this->deviceContext.Get());
+    hr = this->cb_ps_light.Initialize(this->device.Get(), this->deviceContext.Get());
     COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
+    this->cb_ps_light.data.ambientLightColour = XMFLOAT3(1,1,1);
+	this->cb_ps_light.data.ambientLightStrength = 1.0f;
+
     //initialize models
-    if (!testModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
+    if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
         return false;
+    //initialize models
+    if (!nanosuitModel.Initialize("Data\\Objects\\nanosuit\\nanosuit.obj", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
+        return false;
+    //initialize models
+    if (!cowModel.Initialize("Data\\Objects\\cow.obj", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
+        return false;
+
     
     camera.SetPosition(0.0f, 0.0f, -2.0f);
     camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);

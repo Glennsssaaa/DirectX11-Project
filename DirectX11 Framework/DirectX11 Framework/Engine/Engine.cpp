@@ -20,6 +20,10 @@ void Engine::Update() {
 	float dt = timer.GetMillisecondsElapsed();
 	timer.Restart();
 
+	gfx.carModel.AdjustRotation(0.0f, 0.001f * dt, 0.0f);
+	gfx.cowModel.AdjustRotation(0.0f, 0.001f * dt, 0.0f);
+	gfx.nanosuitModel.AdjustRotation(0.0f, 0.001f * dt, 0.0f);
+
 	while (!keyboard.CharBufferIsEmpty()) {
 		unsigned char ch = keyboard.ReadChar();
 	}
