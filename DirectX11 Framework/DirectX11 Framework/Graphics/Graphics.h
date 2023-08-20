@@ -61,5 +61,6 @@ private:
 	int windowHeight = 0;
 
 	Timer fpsTimer;
+	bool enableFlashlight;
 };
 

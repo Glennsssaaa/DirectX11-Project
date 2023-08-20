@@ -34,6 +34,10 @@ void Graphics::RenderFrame()
     this->cb_ps_light.data.dynamicLightColour = this->light.lightColour;
     this->cb_ps_light.data.dynamicLightStrength = this->light.lightStrength;
     this->cb_ps_light.data.dynamicLightPosition = this->light.GetPositionFloat3();
+	this->cb_ps_light.data.dynamicLightAttenuation_a = this->light.attenuation_a;
+	this->cb_ps_light.data.dynamicLightAttenuation_b = this->light.attenuation_b;
+	this->cb_ps_light.data.dynamicLightAttenuation_c = this->light.attenuation_c;
+
     this->cb_ps_light.ApplyChanges();
     this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_light.GetAddressOf());
     //Declare States
@@ -103,10 +107,20 @@ void Graphics::RenderFrame()
     
     {
         this->deviceContext->PSSetShader(pixelshader_nolight.GetShader(), NULL, 0);
-        this->light.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
         this->light.SetScale(5, 5, 5);
-        //this->light.SetRotation(1, 0, 0);
+
+        if (enableFlashlight) {
+            XMVECTOR lightPosition = this->camera.GetPositionVector();
+            lightPosition += this->camera.GetForwardVector();
+            this->light.SetPosition(lightPosition);
+            this->light.SetRotation(this->camera.GetRotationVector());
+        }
+        else {
+			this->light.SetPosition(light.GetPositionVector());
+			this->light.SetRotation(light.GetRotationVector());
+            this->light.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+        }
     }
 
 
@@ -138,6 +152,14 @@ void Graphics::RenderFrame()
 	ImGui::Begin("Light Controls");
 	ImGui::DragFloat3("Ambient Light Colour", &this->cb_ps_light.data.ambientLightColour.x, 0.01f, 0.0f, 1.0f);
 	ImGui::DragFloat("Ambient Light Strength", &this->cb_ps_light.data.ambientLightStrength, 0.01f, 0.0f, 1.0f);
+
+	ImGui::DragFloat3("Diffuse Light Colour", &this->light.lightColour.x, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("Diffuse Light Strength", &this->light.lightStrength, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("Light Attenuation A", &this->light.attenuation_a, 0.1f, 0.1f, 100.0f);
+    ImGui::DragFloat("Light Attenuation B", &this->light.attenuation_b, 0.1f, 0.1f, 100.0f);
+    ImGui::DragFloat("Light Attenuation C", &this->light.attenuation_c, 0.1f, 0.1f, 100.0f);
+
+	ImGui::Checkbox("Enable Flashlight", &enableFlashlight);
     ImGui::End();
     
     ImGui::Render();
