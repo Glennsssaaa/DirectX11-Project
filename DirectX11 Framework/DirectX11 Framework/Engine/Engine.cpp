@@ -2,17 +2,17 @@
 
 bool Engine::Initialize(HINSTANCE hInstance, std::string window_title, std::string window_class, int width, int height) {
 	timer.Start();
-	if (!this->render_window.Initialize(this, hInstance, window_title, window_class, width, height)) {
+	if (!render_window.Initialize(this, hInstance, window_title, window_class, width, height)) {
 		return false;
 	}
-	if (!gfx.Initialize(this->render_window.GetHWND(), width, height)) {
+	if (!gfx.Initialize(render_window.GetHWND(), width, height)) {
 		return false;
 	}
 	return true;
 }
 
 bool Engine::ProcessMessages() {
-	return this->render_window.ProcessMessages();
+	return render_window.ProcessMessages();
 }
 
 void Engine::Update() {
@@ -37,29 +37,29 @@ void Engine::Update() {
 		MouseEvent me = mouse.ReadEvent();
 		if (mouse.IsRightDown()) {
 			if (me.GetType() == MouseEvent::EventType::RAW_MOVE) {
-				this->gfx.camera.AdjustRotation((float)me.GetPosY() * 0.01f, (float)me.GetPosX() * 0.01f, 0);
+				gfx.Camera3D.AdjustRotation((float)me.GetPosY() * 0.01f, (float)me.GetPosX() * 0.01f, 0);
 			}
 		}
 	}
 
-	const float cameraSpeed = 0.005f;
+	const float Camera3DSpeed = 0.005f;
 	if (keyboard.KeyIsPressed('W')) {
-		this->gfx.camera.AdjustPosition(this->gfx.camera.GetForwardVector() * cameraSpeed * dt);
+		gfx.Camera3D.AdjustPosition(gfx.Camera3D.GetForwardVector() * Camera3DSpeed * dt);
 	}
 	if (keyboard.KeyIsPressed('S')) {
-		this->gfx.camera.AdjustPosition(this->gfx.camera.GetBackwardVector() * cameraSpeed * dt);
+		gfx.Camera3D.AdjustPosition(gfx.Camera3D.GetBackwardVector() * Camera3DSpeed * dt);
 	}
 	if (keyboard.KeyIsPressed('A')) {
-		this->gfx.camera.AdjustPosition(this->gfx.camera.GetLeftVector() * cameraSpeed * dt);
+		gfx.Camera3D.AdjustPosition(gfx.Camera3D.GetLeftVector() * Camera3DSpeed * dt);
 	}
 	if (keyboard.KeyIsPressed('D')) {
-		this->gfx.camera.AdjustPosition(this->gfx.camera.GetRightVector() * cameraSpeed * dt);
+		gfx.Camera3D.AdjustPosition(gfx.Camera3D.GetRightVector() * Camera3DSpeed * dt);
 	}
 	if (keyboard.KeyIsPressed(VK_SPACE)) {
-		this->gfx.camera.AdjustPosition(0.0f,cameraSpeed * dt,0.0f);
+		gfx.Camera3D.AdjustPosition(0.0f,Camera3DSpeed * dt,0.0f);
 	}
 	if (keyboard.KeyIsPressed('Z')) {
-		this->gfx.camera.AdjustPosition(0.0f,-cameraSpeed * dt,0.0f);
+		gfx.Camera3D.AdjustPosition(0.0f,-Camera3DSpeed * dt,0.0f);
 	}
 }
 

@@ -19,16 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics\Colour.cpp" />
-    <ClCompile Include="Graphics\GameObject.cpp" />
-    <ClCompile Include="Graphics\Camera.cpp" />
-    <ClCompile Include="Graphics\AdapterReader.cpp" />
+    <ClCompile Include="Graphics\GameObjects\GameObject2D.cpp" />
+    <ClCompile Include="Graphics\GameObjects\GameObject3D.cpp" />
+    <ClCompile Include="Graphics\Utility\Colour.cpp" />
+    <ClCompile Include="Graphics\GameObjects\GameObject.cpp" />
+    <ClCompile Include="Graphics\GameObjects\Camera3D.cpp" />
+    <ClCompile Include="Graphics\Utility\AdapterReader.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
-    <ClCompile Include="Graphics\Model.cpp" />
-    <ClCompile Include="Graphics\Mesh.cpp" />
-    <ClCompile Include="Graphics\Texture.cpp" />
-    <ClCompile Include="Graphics\RenderableGameObject.cpp" />
-    <ClCompile Include="Graphics\Light.cpp" />
+    <ClCompile Include="Graphics\Utility\Model.cpp" />
+    <ClCompile Include="Graphics\Utility\Mesh.cpp" />
+    <ClCompile Include="Graphics\Utility\Texture.cpp" />
+    <ClCompile Include="Graphics\GameObjects\RenderableGameObject.cpp" />
+    <ClCompile Include="Graphics\GameObjects\Light.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -42,27 +44,29 @@
     <ClCompile Include="Mouse\MouseClass.cpp" />
     <ClCompile Include="Mouse\MouseEvent.cpp" />
     <ClCompile Include="Engine\RenderWindow.cpp" />
-    <ClCompile Include="Graphics\Shaders.cpp" />
+    <ClCompile Include="Graphics\Shaders\Shaders.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graphics\GameObject.h" />
-    <ClInclude Include="Graphics\Colour.h" />
-    <ClInclude Include="Graphics\Model.h" />
-    <ClInclude Include="Graphics\Mesh.h" />
-    <ClInclude Include="Graphics\Texture.h" />
-    <ClInclude Include="Graphics\RenderableGameObject.h" />
-    <ClInclude Include="Graphics\Light.h" />
+    <ClInclude Include="Graphics\GameObjects\GameObject2D.h" />
+    <ClInclude Include="Graphics\GameObjects\GameObject3D.h" />
+    <ClInclude Include="Graphics\GameObjects\GameObject.h" />
+    <ClInclude Include="Graphics\Utility\Colour.h" />
+    <ClInclude Include="Graphics\Utility\Model.h" />
+    <ClInclude Include="Graphics\Utility\Mesh.h" />
+    <ClInclude Include="Graphics\Utility\Texture.h" />
+    <ClInclude Include="Graphics\GameObjects\RenderableGameObject.h" />
+    <ClInclude Include="Graphics\GameObjects\Light.h" />
     <ClInclude Include="Utility\COMException.h" />
-    <ClInclude Include="Graphics\Camera.h" />
-    <ClInclude Include="Graphics\AdapterReader.h" />
+    <ClInclude Include="Graphics\GameObjects\Camera3D.h" />
+    <ClInclude Include="Graphics\Utility\AdapterReader.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Utility\ErrorLogger.h" />
-    <ClInclude Include="Graphics\ConstantBuffer.h" />
-    <ClInclude Include="Graphics\ConstantBufferTypes.h" />
+    <ClInclude Include="Graphics\Shaders\ConstantBuffer.h" />
+    <ClInclude Include="Graphics\Shaders\ConstantBufferTypes.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\ImGui\imconfig.h" />
     <ClInclude Include="Graphics\ImGui\imgui.h" />
@@ -72,21 +76,21 @@
     <ClInclude Include="Graphics\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Graphics\ImGui\imstb_textedit.h" />
     <ClInclude Include="Graphics\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Graphics\IndexBuffer.h" />
+    <ClInclude Include="Graphics\Shaders\IndexBuffer.h" />
     <ClInclude Include="Keyboard\KeyboardClass.h" />
     <ClInclude Include="Keyboard\KeyboardEvent.h" />
     <ClInclude Include="Mouse\MouseClass.h" />
     <ClInclude Include="Mouse\MouseEvent.h" />
     <ClInclude Include="Engine\RenderWindow.h" />
-    <ClInclude Include="Graphics\Shaders.h" />
+    <ClInclude Include="Graphics\Shaders\Shaders.h" />
     <ClInclude Include="Utility\StringHelper.h" />
-    <ClInclude Include="Graphics\Vertex.h" />
-    <ClInclude Include="Graphics\VertexBuffer.h" />
+    <ClInclude Include="Graphics\Shaders\Vertex.h" />
+    <ClInclude Include="Graphics\Shaders\VertexBuffer.h" />
     <ClInclude Include="Utility\Timer.h" />
     <ClInclude Include="Engine\WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="pixelshader_nolight.hlsl">
+    <FxCompile Include="Shaders\pixelshader_nolight.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -191,6 +195,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,6 +211,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -221,6 +227,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -236,6 +243,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -40,14 +40,32 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{eb986f11-faac-4d36-bfd4-0e82e9feb656}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utility">
-      <UniqueIdentifier>{be52d253-6664-41ec-98fa-ad0c90cc6528}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{fe6339bb-b76d-4452-91e3-31afaab54ee1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{dce65695-cb05-481f-b268-3c97fda08559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{be52d253-6664-41ec-98fa-ad0c90cc6528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Utility">
+      <UniqueIdentifier>{6589ace5-e58a-4fdc-94c4-a9be77653e65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Shaders">
+      <UniqueIdentifier>{a9c4aae9-c528-487a-b716-15d400d05606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\GameObject">
+      <UniqueIdentifier>{5352bac4-f6ec-477c-8dc0-ebeb0908ee7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Utility">
+      <UniqueIdentifier>{2b4a6364-f9ae-460a-921b-f87fa999913b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Shaders">
+      <UniqueIdentifier>{c81fad1e-06b6-4e06-9267-9f4cce6f1a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\GameObjects">
+      <UniqueIdentifier>{c7e6526f-df68-430b-bffa-e72fa4928a0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,20 +84,8 @@
     <ClCompile Include="Graphics\Graphics.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\AdapterReader.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Mouse\MouseEvent.cpp">
       <Filter>Source Files\Mouse</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Shaders.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\StringHelper.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Camera.cpp">
-      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\ImGui\imgui.cpp">
       <Filter>Source Files\Graphics\ImGui</Filter>
@@ -114,26 +120,44 @@
     <ClCompile Include="Engine\Engine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Model.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\Utility\AdapterReader.cpp">
+      <Filter>Source Files\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Mesh.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\Utility\Colour.cpp">
+      <Filter>Source Files\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\GameObject.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\Utility\Mesh.cpp">
+      <Filter>Source Files\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Colour.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\Utility\Model.cpp">
+      <Filter>Source Files\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Texture.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\Utility\Texture.cpp">
+      <Filter>Source Files\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\RenderableGameObject.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\GameObjects\Camera3D.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Light.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="Graphics\GameObjects\GameObject.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\GameObject2D.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\GameObject3D.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\Light.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\StringHelper.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shaders\Shaders.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\RenderableGameObject.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,30 +174,6 @@
       <Filter>Header Files\Keyboard</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Graphics.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AdapterReader.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Vertex.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Shaders.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\VertexBuffer.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\IndexBuffer.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ConstantBufferTypes.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ConstantBuffer.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Camera.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ImGui\imconfig.h">
@@ -221,26 +221,56 @@
     <ClInclude Include="Engine\WindowContainer.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Model.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\Utility\AdapterReader.h">
+      <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Mesh.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\Utility\Colour.h">
+      <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Colour.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\Utility\Mesh.h">
+      <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Texture.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\Utility\Model.h">
+      <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GameObject.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\GameObjects\Camera3D.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\RenderableGameObject.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\GameObjects\GameObject.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Light.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="Graphics\GameObjects\GameObject2D.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\GameObject3D.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\RenderableGameObject.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\Light.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\ConstantBuffer.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\ConstantBufferTypes.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\IndexBuffer.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\Shaders.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\Vertex.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\VertexBuffer.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Utility\Texture.h">
+      <Filter>Header Files\Graphics\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,7 +280,7 @@
     <FxCompile Include="Shaders\pixelshader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
-    <FxCompile Include="pixelshader_nolight.hlsl">
+    <FxCompile Include="Shaders\pixelshader_nolight.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

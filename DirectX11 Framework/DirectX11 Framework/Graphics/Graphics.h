@@ -1,23 +1,25 @@
 #pragma once
-#include "AdapterReader.h"
-#include "Shaders.h"
+#include "Utility/AdapterReader.h"
+#include "Shaders/Shaders.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
-#include "Camera.h"
+#include "..\\Graphics\\GameObjects\\Camera3D.h"
 #include "..\\Utility\\Timer.h"
 #include "ImGui/imgui.h"
-#include "ImGui\\imgui_impl_win32.h"
-#include "ImGui\\imgui_impl_dx11.h"
-#include "RenderableGameObject.h"
-#include "Light.h"
+#include "ImGui/imgui_impl_win32.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "GameObjects/RenderableGameObject.h"
+#include "GameObjects/Light.h"
+#include "GameObjects/Camera2D.h"
 
 class Graphics
 {
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
-	Camera camera;
+	Camera3D Camera3D;
+	Camera2D Camera2D;
 	RenderableGameObject carModel;
 	RenderableGameObject nanosuitModel;
 	RenderableGameObject cowModel;

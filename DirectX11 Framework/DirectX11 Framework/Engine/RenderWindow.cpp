@@ -1,31 +1,31 @@
 #include "WindowContainer.h"
 
 bool RenderWindow::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInstance, std::string window_title, std::string window_class, int width, int height){
-	this->hInstance = hInstance;
-	this->width = width;
-	this->height = height;
-	this->window_title = window_title;
-	this->window_title_wide = StringHelper::StringToWide(this->window_title);
-	this->window_class = window_class;
-	this->window_class_wide = StringHelper::StringToWide(this->window_class);
+	hInstance = hInstance;
+	width = width;
+	height = height;
+	window_title = window_title;
+	window_title_wide = StringHelper::StringToWide(window_title);
+	window_class = window_class;
+	window_class_wide = StringHelper::StringToWide(window_class);
 
-	this->RegisterWindowClass();
+	RegisterWindowClass();
 
-	int centerScreenX = GetSystemMetrics(SM_CXSCREEN) / 2 - this->width / 2;
-	int centerScreenY = GetSystemMetrics(SM_CYSCREEN) / 2 - this->height / 2;
+	int centerScreenX = GetSystemMetrics(SM_CXSCREEN) / 2 - width / 2;
+	int centerScreenY = GetSystemMetrics(SM_CYSCREEN) / 2 - height / 2;
 
 
 	//Window Rectangle
 	RECT wr;
 	wr.left = centerScreenX;
 	wr.top = centerScreenY;
-	wr.right = wr.left + this->width;
-	wr.bottom = wr.top + this->height;
+	wr.right = wr.left + width;
+	wr.bottom = wr.top + height;
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	this->handle = CreateWindowEx(0,
-		this->window_class_wide.c_str(), //Class Name
-		this->window_title_wide.c_str(), //Title
+	handle = CreateWindowEx(0,
+		window_class_wide.c_str(), //Class Name
+		window_title_wide.c_str(), //Title
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, // Windows Style
 		wr.left, //Window XPos
 		wr.top, //Window YPos
@@ -33,24 +33,24 @@ bool RenderWindow::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInst
 		wr.bottom - wr.top, //Window Height
 		NULL, //Window Parent Handle
 		NULL, //Window Child Handle
-		this->hInstance, //Instance Handle
+		hInstance, //Instance Handle
 		pWindowContainer); //Create Window Param
 	
-	if (this->handle == NULL) {
-	ErrorLogger::Log(GetLastError(), "CreateWindowEX Failed for window: " + this->window_title);
+	if (handle == NULL) {
+	ErrorLogger::Log(GetLastError(), "CreateWindowEX Failed for window: " + window_title);
 		return false;
 	}
 
-	ShowWindow(this->handle, SW_SHOW);
-	SetForegroundWindow(this->handle);
-	SetFocus(this->handle);
+	ShowWindow(handle, SW_SHOW);
+	SetForegroundWindow(handle);
+	SetFocus(handle);
 
 	return true;
 }
 
 RenderWindow::~RenderWindow() {
-	if (this->handle != NULL) {
-		UnregisterClass(this->window_class_wide.c_str(), this->hInstance);
+	if (handle != NULL) {
+		UnregisterClass(window_class_wide.c_str(), hInstance);
 		DestroyWindow(handle);
 	}
 }
@@ -61,7 +61,7 @@ bool RenderWindow::ProcessMessages() {
 	ZeroMemory(&msg, sizeof(MSG));
 
 	while (PeekMessage(&msg, //Message Storage Location
-		this->handle, //Window Handle
+		handle, //Window Handle
 		0, ///Msg Value Max
 		0, //Msg Value Max
 		PM_REMOVE)) //Remove Message after capture
@@ -71,9 +71,9 @@ bool RenderWindow::ProcessMessages() {
 	}
 
 	if (msg.message == WM_NULL) {
-		if (!IsWindow(this->handle)) {
-			this->handle = NULL;
-			UnregisterClass(this->window_class_wide.c_str(), this->hInstance);
+		if (!IsWindow(handle)) {
+			handle = NULL;
+			UnregisterClass(window_class_wide.c_str(), hInstance);
 			return false;
 		}
 	}
@@ -83,7 +83,7 @@ bool RenderWindow::ProcessMessages() {
 
 HWND RenderWindow::GetHWND() const
 {
-	return this->handle;
+	return handle;
 }
 
 LRESULT CALLBACK HandleMsgRedirect(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -124,13 +124,13 @@ void RenderWindow::RegisterWindowClass(){
 	wc.lpfnWndProc = HandleMessageSetup; //Window Proc Pointer
 	wc.cbClsExtra = 0; //Byte Allocation for Structure
 	wc.cbWndExtra = 0; //Byte Allocation for Instance
-	wc.hInstance = this->hInstance; //Instance handle
+	wc.hInstance = hInstance; //Instance handle
 	wc.hIcon = NULL; //Icon handle
 	wc.hIconSm = NULL; //Small icon handle
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW); //Cursor Initialisation
 	wc.hbrBackground = NULL; //Window background brush handle
 	wc.lpszMenuName = NULL; //Menu character string
-	wc.lpszClassName = this->window_class_wide.c_str(); //Class name string
+	wc.lpszClassName = window_class_wide.c_str(); //Class name string
 	wc.cbSize = sizeof(WNDCLASSEX); //Struct size
 	RegisterClassEx(&wc); //Class register
 }
