@@ -31,8 +31,11 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 void Graphics::RenderFrame()
 {
     static bool enableWireframe = false;
+    this->cb_ps_light.data.dynamicLightColour = this->light.lightColour;
+    this->cb_ps_light.data.dynamicLightStrength = this->light.lightStrength;
+    this->cb_ps_light.data.dynamicLightPosition = this->light.GetPositionFloat3();
     this->cb_ps_light.ApplyChanges();
-	this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_light.GetAddressOf());
+    this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_light.GetAddressOf());
     //Declare States
     float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
     this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
@@ -44,7 +47,7 @@ void Graphics::RenderFrame()
     if (enableWireframe) {
         this->deviceContext->RSSetState(this->rasterizerState_Wireframe.Get());
     }
-    else if(!enableWireframe){
+    else if (!enableWireframe) {
         this->deviceContext->RSSetState(this->rasterizerState.Get());
     }
     this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
@@ -59,17 +62,18 @@ void Graphics::RenderFrame()
     static float rotationOffset[3] = { 0,0,0 };
 
     static float alphaValue = 1.0f;
+
     { // Car
         scaleOffset[0] = 0.01;
-		scaleOffset[1] = 0.01;
-		scaleOffset[2] = 0.01;
+        scaleOffset[1] = 0.01;
+        scaleOffset[2] = 0.01;
         translationOffset[0] = 15.0f;
         translationOffset[1] = 0;
         translationOffset[2] = 0;
-        this->carModel.Draw(camera.GetViewMatrix()*camera.GetProjectionMatrix());
-		this->carModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
-		this->carModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
-		//this->carModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
+        this->carModel.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+        this->carModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
+        this->carModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+        //this->carModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
     }
     { // Nanosuit
@@ -82,22 +86,30 @@ void Graphics::RenderFrame()
         this->nanosuitModel.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
         this->nanosuitModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
         this->nanosuitModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
-       // this->nanosuitModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
+        // this->nanosuitModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
-    } 
+    }
     { // Cow
         scaleOffset[0] = 0.05;
         scaleOffset[1] = 0.05;
         scaleOffset[2] = 0.05;
-		translationOffset[0] = 0;
-		translationOffset[1] = 0;
-		translationOffset[2] = 0;
+        translationOffset[0] = 0;
+        translationOffset[1] = 0;
+        translationOffset[2] = 0;
         this->cowModel.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
         this->cowModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
         this->cowModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
-      //  this->cowModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
-
     }
+    
+    {
+        this->deviceContext->PSSetShader(pixelshader_nolight.GetShader(), NULL, 0);
+        this->light.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+
+        this->light.SetScale(5, 5, 5);
+        //this->light.SetRotation(1, 0, 0);
+    }
+
+
     //Draw Text
     static int fpsCounter = 0;
     static std::string fpsString = "FPS: 0";
@@ -308,6 +320,10 @@ bool Graphics::InitializeShaders()
         return false;
     }
 
+	if (!pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso")) {
+		return false;
+	}
+    
     return true;
 }
 
@@ -346,7 +362,10 @@ bool Graphics::IntiializeScene()
     if (!cowModel.Initialize("Data\\Objects\\cow.obj", this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
         return false;
 
-    
+    if (!light.Initialize(this->device.Get(), this->deviceContext.Get(), this->cb_vs_vertexshader))
+        return false;
+
+
     camera.SetPosition(0.0f, 0.0f, -2.0f);
     camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
 }
