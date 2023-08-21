@@ -36,6 +36,7 @@
     <ClCompile Include="Graphics\GameObjects\Sprite.cpp" />
     <ClCompile Include="Graphics\GameObjects\PrimitiveGameObject.cpp" />
     <ClCompile Include="Graphics\GameObjects\Primitives\SphereMesh.cpp" />
+    <ClCompile Include="Graphics\GameObjects\Primitives\PlaneMesh.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="Graphics\GameObjects\Sprite.h" />
     <ClInclude Include="Graphics\GameObjects\PrimitiveGameObject.h" />
     <ClInclude Include="Graphics\GameObjects\Primitives\SphereMesh.h" />
+    <ClInclude Include="Graphics\GameObjects\Primitives\PlaneMesh.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Graphics\GameObjects\Camera3D.h" />
     <ClInclude Include="Graphics\Utility\AdapterReader.h" />

@@ -51,9 +51,9 @@ void MouseClass::OnWheelDown(int x, int y)
 
 void MouseClass::OnMouseMove(int x, int y)
 {
-	x = x;
-	y = y;
-	eventBuffer.push(MouseEvent(MouseEvent::EventType::Move, x, y));
+	this->x = x;
+	this->y = y;
+	eventBuffer.push(MouseEvent(MouseEvent::EventType::Move, this->x, this->y));
 }
 
 void MouseClass::OnMouseMoveRaw(int x, int y) {

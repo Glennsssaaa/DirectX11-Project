@@ -20,6 +20,17 @@ const XMFLOAT3& GameObject::GetRotationFloat3() const
 	return rot;
 }
 
+const XMVECTOR& GameObject::GetScaleVector() const
+{
+	return scaleVector;
+}
+
+const XMFLOAT3& GameObject::GetScaleFloat3() const
+{
+	return scale;
+}
+
+
 void GameObject::SetPosition(const XMVECTOR& pos)
 {
 	XMStoreFloat3(&this->pos, pos);
@@ -87,6 +98,30 @@ void GameObject::AdjustPosition(float x, float y, float z)
 	UpdateMatrix();
 }
 
+void GameObject::AdjustScale(const XMVECTOR& scale)
+{
+	scaleVector += scale;
+	XMStoreFloat3(&this->scale, scaleVector);
+	UpdateMatrix();
+}
+void GameObject::AdjustScale(const XMFLOAT3& scale)
+{
+	this->scale.x += scale.x;
+	this->scale.y += scale.y;
+	this->scale.z += scale.z;
+	scaleVector = XMLoadFloat3(&scale);
+	UpdateMatrix();
+}
+void GameObject::AdjustScale(float x, float y, float z)
+{
+	scale.x += x;
+	scale.y += y;
+	scale.z += z;
+	scaleVector = XMLoadFloat3(&scale);
+	UpdateMatrix();
+}
+
+
 void GameObject::SetRotation(const XMVECTOR& rot)
 {
 	XMStoreFloat3(&this->rot, rot);
@@ -130,6 +165,11 @@ void GameObject::AdjustRotation(float x, float y, float z)
 	rot.y += y;
 	rot.z += z;
 	rotVector = XMLoadFloat3(&rot);
+	UpdateMatrix();
+}
+
+void GameObject::AdjustAlpha(float alpha) {
+	this->alpha = alpha;
 	UpdateMatrix();
 }
 

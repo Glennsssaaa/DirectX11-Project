@@ -15,12 +15,15 @@
 #include "GameObjects/Sprite.h"
 #include "GameObjects/Primitives/CubeMesh.h"
 #include ".\GameObjects\Primitives\SphereMesh.h"
-
+#include "GameObjects/Primitives/PlaneMesh.h"
 class Graphics
 {
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
+	void RenderObjects();
+	void RenderGUI();
+	void ObjectSelect();
 	Camera3D Camera3D;
 	Camera2D camera2D;
 	RenderableGameObject carModel;
@@ -30,6 +33,12 @@ public:
 	Sprite sprite;
 	CubeMesh cube;
 	SphereMesh skyBox;
+	PlaneMesh ground;
+	RenderableGameObject* selectedGameObject = nullptr;
+	int windowHeight;
+	int windowWidth;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;
+	XMFLOAT3 mousePos;
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -37,7 +46,6 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView;
 
 	VertexShader vertexshader;
@@ -73,11 +81,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> brickTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cowTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> skyboxTexture;
-
-	int windowWidth = 0;
-	int windowHeight = 0;
-
+	
 	Timer fpsTimer;
 	bool enableFlashlight;
+	bool enableWireframe;
+
+	UINT offset = 0;
+	float translationOffset[3] = { 0,0,0 };
+	float scaleOffset[3] = { 5,5,5 };
+	float rotationOffset[3] = { 0,0,0 };
+	float alphaValue = 1.0f;
 };
 

@@ -8,8 +8,11 @@ public:
 	bool ProcessMessages();
 	void Update();
 	void RenderFrame();
-
+	void GetWindowResolution();
 private:
 	Timer timer;
+	bool fullScreen;
+	int horizontal;
+	int vertical;
 };
 
