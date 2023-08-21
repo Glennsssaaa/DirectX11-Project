@@ -13,7 +13,8 @@
 #include "GameObjects/Light.h"
 #include "GameObjects/Camera2D.h"
 #include "GameObjects/Sprite.h"
-#include "..\\CubeMesh.h"
+#include "GameObjects/Primitives/CubeMesh.h"
+#include ".\GameObjects\PrimitiveGameObject.h"
 
 class Graphics
 {
@@ -59,6 +60,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_CullFront;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_Wireframe;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_Wireframe_CullFront;
 	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
 
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;

@@ -14,19 +14,6 @@ bool RenderableGameObject::Initialize(const std::string& filepath, ID3D11Device*
 	return true;
 }
 
-bool RenderableGameObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cb_vs_vertexshader)
-{
-	if (!model.Initialize(device, deviceContext, cb_vs_vertexshader))
-	{
-		return false;
-	}
-	SetPosition(0.0f, 0.0f, 0.0f);
-	SetRotation(0.0f, 0.0f, 0.0f);
-	SetScale(1.0f, 1.0f, 1.0f);
-	UpdateMatrix();
-	return false;
-}
-
 void RenderableGameObject::Draw(const XMMATRIX& viewProjectionMatrix)
 {
 	model.Draw(worldMatrix, viewProjectionMatrix);

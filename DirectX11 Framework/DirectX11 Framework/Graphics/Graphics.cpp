@@ -70,7 +70,7 @@ void Graphics::RenderFrame()
     
     UINT offset = 0;
     static float translationOffset[3] = { 0,0,0 };
-    static float scaleOffset[3] = { 0.01,0.01,0.01 };
+    static float scaleOffset[3] = { 5,5,5 };
     static float rotationOffset[3] = { 0,0,0 };
 
     static float alphaValue = 1.0f;
@@ -82,44 +82,23 @@ void Graphics::RenderFrame()
 
     
     { // Car
-        scaleOffset[0] = 0.01;
-        scaleOffset[1] = 0.01;
-        scaleOffset[2] = 0.01;
-        translationOffset[0] = 15.0f;
-        translationOffset[1] = 0;
-        translationOffset[2] = 0;
         carModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
-        carModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
-        carModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+        carModel.SetPosition(15.0f,0,0);
+        carModel.SetScale(0.01,0.01,0.01);
         //carModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
     }
     { // Nanosuit
-        scaleOffset[0] = 1;
-        scaleOffset[1] = 1;
-        scaleOffset[2] = 1;
-        translationOffset[0] = -15.0f;
-        translationOffset[1] = 0;
-        translationOffset[2] = 0;
         nanosuitModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
-        nanosuitModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
-        nanosuitModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+        nanosuitModel.SetPosition(-15.0f,0,0);
+        nanosuitModel.SetScale(1,1,1);
         // nanosuitModel.SetRotation(rotationOffset[0], rotationOffset[1], rotationOffset[2]);
 
     }
     { // Cow
-        scaleOffset[0] = 0.05;
-        scaleOffset[1] = 0.05;
-        scaleOffset[2] = 0.05;
-        translationOffset[0] = 0;
-        translationOffset[1] = 0;
-        translationOffset[2] = 0;
         cowModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
-        cowModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
-        cowModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
-    }
-    {
-		cube.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
+        cowModel.SetPosition(0,0,0);
+        cowModel.SetScale(0.05,0.05,0.05);
     }
     {
         deviceContext->PSSetShader(pixelshader_nolight.GetShader(), NULL, 0);
@@ -139,7 +118,21 @@ void Graphics::RenderFrame()
         }
     }
 
+    //Primitive Shapes
+    if (enableWireframe) {
+        deviceContext->RSSetState(rasterizerState_Wireframe_CullFront.Get());
+    }
+    else if (!enableWireframe) {
+        deviceContext->RSSetState(rasterizerState_CullFront.Get());
+    }
+    { // Cube
+        this->deviceContext->PSSetShaderResources(0, 1, this->brickTexture.GetAddressOf());
 
+        cube.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
+        cube.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
+        cube.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
+    }
+    
     //Draw Text
     static int fpsCounter = 0;
     static std::string fpsString = "FPS: 0";
@@ -317,6 +310,12 @@ bool Graphics::InitializeDirectX(HWND hwnd)
     hr = device->CreateRasterizerState(&rasterizerDescCullFront, rasterizerState_CullFront.GetAddressOf());
     COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state");
 
+    CD3D11_RASTERIZER_DESC rasterizerDescCullFrontWireframe(D3D11_DEFAULT);
+	rasterizerDescCullFrontWireframe.FillMode = D3D11_FILL_WIREFRAME;
+    rasterizerDescCullFrontWireframe.CullMode = D3D11_CULL_FRONT;
+    hr = device->CreateRasterizerState(&rasterizerDescCullFrontWireframe, rasterizerState_Wireframe_CullFront.GetAddressOf());
+    COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state");
+
     //Blend State
     D3D11_BLEND_DESC blendDesc = { 0 };
 
@@ -466,9 +465,9 @@ bool Graphics::IntiializeScene()
     Camera3D.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
 
 	camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
-
+    
     if (!cube.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
-        return false;
+       return false;
     }
 }
     catch (COMException & exception) {

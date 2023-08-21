@@ -8,9 +8,10 @@ Mesh::Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector
 	
 	HRESULT hr = vertexBuffer.Initialize(device, vertices.data(), vertices.size());
 	COM_ERROR_IF_FAILED(hr, "Failed to initialize vertex buffer for mesh.");
-	
+
 	hr = indexBuffer.Initialize(device, indices.data(), indices.size());
-	COM_ERROR_IF_FAILED(hr, "Failed to initialize index buffer for mesh.");}
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize index buffer for mesh.");
+}
 
 Mesh::Mesh(const Mesh& mesh)
 {

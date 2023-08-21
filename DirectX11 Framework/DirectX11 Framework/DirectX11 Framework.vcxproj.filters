@@ -165,8 +165,11 @@
     <ClCompile Include="Graphics\GameObjects\Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CubeMesh.cpp">
+    <ClCompile Include="Graphics\GameObjects\Primitives\CubeMesh.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\PrimitiveGameObject.cpp">
+      <Filter>Source Files\Graphics\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,8 +290,11 @@
     <ClInclude Include="Graphics\GameObjects\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CubeMesh.h">
+    <ClInclude Include="Graphics\GameObjects\Primitives\CubeMesh.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\PrimitiveGameObject.h">
+      <Filter>Header Files\Graphics\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

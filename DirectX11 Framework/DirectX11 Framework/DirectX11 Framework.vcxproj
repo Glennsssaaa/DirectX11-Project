@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CubeMesh.cpp" />
+    <ClCompile Include="Graphics\GameObjects\Primitives\CubeMesh.cpp" />
     <ClCompile Include="Graphics\GameObjects\Camera2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject3D.cpp" />
@@ -34,6 +34,7 @@
     <ClCompile Include="Graphics\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Graphics\GameObjects\Light.cpp" />
     <ClCompile Include="Graphics\GameObjects\Sprite.cpp" />
+    <ClCompile Include="Graphics\GameObjects\PrimitiveGameObject.cpp" />
     <ClCompile Include="Utility\ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\ImGui\imgui.cpp" />
@@ -54,7 +55,7 @@
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CubeMesh.h" />
+    <ClInclude Include="Graphics\GameObjects\Primitives\CubeMesh.h" />
     <ClInclude Include="Graphics\GameObjects\Camera2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject3D.h" />
@@ -66,6 +67,7 @@
     <ClInclude Include="Graphics\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Graphics\GameObjects\Light.h" />
     <ClInclude Include="Graphics\GameObjects\Sprite.h" />
+    <ClInclude Include="Graphics\GameObjects\PrimitiveGameObject.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Graphics\GameObjects\Camera3D.h" />
     <ClInclude Include="Graphics\Utility\AdapterReader.h" />
