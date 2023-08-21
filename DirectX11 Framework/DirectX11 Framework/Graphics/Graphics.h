@@ -13,6 +13,7 @@
 #include "GameObjects/Light.h"
 #include "GameObjects/Camera2D.h"
 #include "GameObjects/Sprite.h"
+#include "..\\CubeMesh.h"
 
 class Graphics
 {
@@ -26,6 +27,7 @@ public:
 	RenderableGameObject cowModel;
 	Light light;
 	Sprite sprite;
+	CubeMesh cube;
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -51,6 +53,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_drawMask;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_applyMask;
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_CullFront;

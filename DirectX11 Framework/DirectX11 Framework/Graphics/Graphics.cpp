@@ -45,7 +45,6 @@ void Graphics::RenderFrame()
     deviceContext->ClearRenderTargetView(renderTargetView.Get(), bgcolor);
     deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    deviceContext->IASetInputLayout(vertexshader.GetInputLayout());
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     if (enableWireframe) {
@@ -54,12 +53,21 @@ void Graphics::RenderFrame()
     else if (!enableWireframe) {
         deviceContext->RSSetState(rasterizerState.Get());
     }
-    deviceContext->OMSetDepthStencilState(depthStencilState.Get(), 0);
     deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
     deviceContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
-    deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
-    deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
+
+    //Stencil Mask
+    /*deviceContext->OMSetDepthStencilState(depthStencilState_drawMask.Get(), 0);
+    deviceContext->IASetInputLayout(vertexshader_2d.GetInputLayout());
+    deviceContext->PSSetShader(pixelshader_2d.GetShader(), NULL, 0);
+    deviceContext->VSSetShader(vertexshader_2d.GetShader(), NULL, 0);
+    sprite.Draw(camera2D.GetWorldMatrix() * camera2D.GetOrthoMatrix());
+    //Stencil Mask
+    deviceContext->OMSetDepthStencilState(depthStencilState_applyMask.Get(), 0);
+    */
+    
+    
     UINT offset = 0;
     static float translationOffset[3] = { 0,0,0 };
     static float scaleOffset[3] = { 0.01,0.01,0.01 };
@@ -67,6 +75,12 @@ void Graphics::RenderFrame()
 
     static float alphaValue = 1.0f;
 
+    deviceContext->OMSetDepthStencilState(depthStencilState.Get(), 0);
+    deviceContext->IASetInputLayout(vertexshader.GetInputLayout());
+    deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
+    deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
+
+    
     { // Car
         scaleOffset[0] = 0.01;
         scaleOffset[1] = 0.01;
@@ -104,7 +118,9 @@ void Graphics::RenderFrame()
         cowModel.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
         cowModel.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
     }
-    
+    {
+		cube.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
+    }
     {
         deviceContext->PSSetShader(pixelshader_nolight.GetShader(), NULL, 0);
 
@@ -122,11 +138,6 @@ void Graphics::RenderFrame()
             light.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
         }
     }
-
-	deviceContext->IASetInputLayout(vertexshader_2d.GetInputLayout());
-    deviceContext->PSSetShader(pixelshader_2d.GetShader(), NULL, 0);
-	deviceContext->VSSetShader(vertexshader_2d.GetShader(), NULL, 0);
-	sprite.Draw(camera2D.GetWorldMatrix() * camera2D.GetOrthoMatrix());
 
 
     //Draw Text
@@ -247,6 +258,42 @@ bool Graphics::InitializeDirectX(HWND hwnd)
 
     hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilState.GetAddressOf());
     COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil state");
+    
+
+    //Draw Mask
+    CD3D11_DEPTH_STENCIL_DESC depthStencilDesc_drawMask(D3D11_DEFAULT);
+    depthStencilDesc_drawMask.DepthEnable = false;
+    depthStencilDesc_drawMask.StencilEnable = true;
+    depthStencilDesc_drawMask.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+	depthStencilDesc_drawMask.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_drawMask.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_drawMask.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+
+    depthStencilDesc_drawMask.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthStencilDesc_drawMask.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_drawMask.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
+    depthStencilDesc_drawMask.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+
+    hr = device->CreateDepthStencilState(&depthStencilDesc_drawMask, depthStencilState_drawMask.GetAddressOf());
+    COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil state");
+
+    //Apply Mask
+    CD3D11_DEPTH_STENCIL_DESC depthStencilDesc_applyMask(D3D11_DEFAULT);
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    depthStencilDesc_applyMask.StencilEnable = true;
+    depthStencilDesc_applyMask.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+    depthStencilDesc_applyMask.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_applyMask.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_applyMask.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+
+    depthStencilDesc_applyMask.FrontFace.StencilFunc = D3D11_COMPARISON_LESS;
+    depthStencilDesc_applyMask.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_applyMask.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc_applyMask.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+
+    hr = device->CreateDepthStencilState(&depthStencilDesc_applyMask, depthStencilState_applyMask.GetAddressOf());
+    COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil state");
+
 
 
     //Viewport
@@ -400,6 +447,7 @@ bool Graphics::IntiializeScene()
     //initialize models
     if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
         return false;
+    
     //initialize models
     if (!nanosuitModel.Initialize("Data\\Objects\\nanosuit\\nanosuit.obj", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
         return false;
@@ -413,10 +461,15 @@ bool Graphics::IntiializeScene()
     if (!sprite.Initialize(this->device.Get(), this->deviceContext.Get(), 256, 256, "Data/Textures/DK.png", cb_vs_vertexshader_2d))
         return false;
         
+	sprite.SetPosition(XMFLOAT3(windowWidth / 2 - sprite.GetWidth() / 2, windowHeight / 2 - sprite.GetHeight() / 2, 0.0f));
     Camera3D.SetPosition(0.0f, 0.0f, -2.0f);
     Camera3D.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
 
 	camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
+
+    if (!cube.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
+        return false;
+    }
 }
     catch (COMException & exception) {
         ErrorLogger::Log(exception);

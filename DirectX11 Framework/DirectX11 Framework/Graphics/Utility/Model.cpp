@@ -18,17 +18,31 @@ bool Model::Initialize(const std::string& filepath, ID3D11Device* device, ID3D11
     return true;
 }
 
+bool Model::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cb_vs_vertexshader)
+{
+	this->device = device;
+	this->deviceContext = deviceContext;
+	this->cb_vs_vertexshader = &cb_vs_vertexshader;
+
+	return true;
+}
+
 
 void Model::Draw(const XMMATRIX& worldMatrix, const XMMATRIX& viewProjectionMatrix)
 {
 	deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertexshader->GetAddressOf());
-
-	for (int i = 0; i < meshes.size(); i++)
-	{
-		cb_vs_vertexshader->data.wvpMatrix = meshes[i].GetTransformMatrix() * worldMatrix * viewProjectionMatrix;
-		cb_vs_vertexshader->data.worldMatrix = meshes[i].GetTransformMatrix() * worldMatrix;
-		cb_vs_vertexshader->ApplyChanges();
-		meshes[i].Draw();
+	
+	if (meshes.size() > 0) {
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			cb_vs_vertexshader->data.wvpMatrix = meshes[i].GetTransformMatrix() * worldMatrix * viewProjectionMatrix;
+			cb_vs_vertexshader->data.worldMatrix = meshes[i].GetTransformMatrix() * worldMatrix;
+			cb_vs_vertexshader->ApplyChanges();
+			meshes[i].Draw();
+		}
+	}
+	else {
+		//Fill in with code for drawing primitives
 	}
 }
 

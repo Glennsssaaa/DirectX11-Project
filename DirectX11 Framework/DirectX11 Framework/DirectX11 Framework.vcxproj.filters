@@ -165,6 +165,9 @@
     <ClCompile Include="Graphics\GameObjects\Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CubeMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse\MouseClass.h">
@@ -282,6 +285,9 @@
       <Filter>Header Files\Graphics\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\GameObjects\Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

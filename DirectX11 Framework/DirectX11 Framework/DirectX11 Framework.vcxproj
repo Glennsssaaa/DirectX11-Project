@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CubeMesh.cpp" />
     <ClCompile Include="Graphics\GameObjects\Camera2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject2D.cpp" />
     <ClCompile Include="Graphics\GameObjects\GameObject3D.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="Engine\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CubeMesh.h" />
     <ClInclude Include="Graphics\GameObjects\Camera2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject2D.h" />
     <ClInclude Include="Graphics\GameObjects\GameObject3D.h" />
