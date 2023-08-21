@@ -7,9 +7,9 @@ ReturnedData CubeMesh::CalculateShape()
 	std::vector<Vertex3D> verticesVector;
 	unsigned long* indices;
 	std::vector<DWORD> indicesVector;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-	resolution = 1;
+	D3D11_BUFFER_DESC Vertex3DBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA Vertex3DData, indexData;
+	resolution = 5;
 	vertexCount = ((6 * resolution) * resolution) * 6;
 	
 	indexCount = vertexCount;
@@ -17,545 +17,68 @@ ReturnedData CubeMesh::CalculateShape()
 	vertices = new Vertex3D[vertexCount];
 	indices = new unsigned long[indexCount];
 
-	float yincrement = 2.0f / resolution;
-	float xincrement = 2.0f / resolution;
-	float ystart = 1.0f;
-	float xstart = -1.0f;
-	float txu = 0.0f;
-	float txv = 0.0f;
-	float txuinc = 1.0f / resolution;	
-	float txvinc = 1.0f / resolution;
-	int v = 0;
-	int i = 0;
+	float w2 = 0.5f * resolution;
 
-	for (int y = 0; y < resolution; y++)	
+	
+	vertices[0] = Vertex3D(-w2, -w2, -w2, 0, 1, 0, 0, -1);
+	vertices[1] = Vertex3D(-w2, +w2, -w2, 0, 0, 0, 0, -1);
+	vertices[2] = Vertex3D(+w2, +w2, -w2, 1, 0, 0, 0, -1);
+	vertices[3] = Vertex3D(+w2, -w2, -w2, 1, 1, 0, 0, -1);
+	// back
+	vertices[4] = Vertex3D(-w2, -w2, +w2, 1, 1, 0, 0, 1);
+	vertices[5] = Vertex3D(+w2, -w2, +w2, 0, 1, 0, 0, 1);
+	vertices[6] = Vertex3D(+w2, +w2, +w2, 0, 0, 0, 0, 1);
+	vertices[7] = Vertex3D(-w2, +w2, +w2, 1, 0, 0, 0, 1);
+	// top
+	
+	vertices[8] = Vertex3D(-w2, +w2, -w2, 0, 1, 0, 1, 0);
+	vertices[9] = Vertex3D(-w2, +w2, +w2, 0, 0, 0, 1, 0);
+	vertices[10] = Vertex3D(+w2, +w2, +w2, 1, 0, 0, 1, 0);
+	vertices[11] = Vertex3D(+w2, +w2, -w2, 1, 1, 0, 1, 0);
+
+	// bottom
+	vertices[12] = Vertex3D(-w2, -w2, -w2, 1, 1, 0, -1, 0);
+	vertices[13] = Vertex3D(+w2, -w2, -w2, 0, 1, 0, -1, 0);
+	vertices[14] = Vertex3D(+w2, -w2, +w2, 0, 0, 0, -1, 0);
+	vertices[15] = Vertex3D(-w2, -w2, +w2, 1, 0, 0, -1, 0);
+
+	// left
+	vertices[16] = Vertex3D(-w2, -w2, +w2, 0, 1, -1, 0, 0);
+	vertices[17] = Vertex3D(-w2, +w2, +w2, 0, 0, -1, 0, 0);
+	vertices[18] = Vertex3D(-w2, +w2, -w2, 1, 0, -1, 0, 0);
+	vertices[19] = Vertex3D(-w2, -w2, -w2, 1, 1, -1, 0, 0);
+
+	// right
+	vertices[20] = Vertex3D(+w2, -w2, -w2, 0, 1, 1, 0, 0);
+	vertices[21] = Vertex3D(+w2, +w2, -w2, 0, 0, 1, 0, 0);
+	vertices[22] = Vertex3D(+w2, +w2, +w2, 1, 0, 1, 0, 0);
+	vertices[23] = Vertex3D(+w2, -w2, +w2, 1, 1, 1, 0, 0);
+
+	for (int i = 0; i < vertexCount; i++)
 	{
-		for (int x = 0; x < resolution; x++)	
-		{
-			vertices[v].pos = XMFLOAT3(xstart, ystart - yincrement, -1.0f);  
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, ystart, -1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart, ystart, -1.0f); 
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart, ystart - yincrement, -1.0f);  
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, ystart - yincrement, -1.0f); 
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, ystart, -1.0f);  
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			xstart += xincrement;
-			txu += txuinc;
-
-		}
-
-		ystart -= yincrement;
-		xstart = -1;
-
-		txu = 0;
-		txv += txvinc;
-
+		verticesVector.push_back(vertices[i]);
 	}
 
-	txv = 0;
+	int indicesArray[] = {
+		0,1,2,0,2,3,
+		4,5,6,4,6,7,
+		8,9,10,8,10,11,
+		12,13,14,12,14,15,
+		16,17,18,16,18,19,
+		20,21,22,20,22,23
+	};
 
-	ystart = 1;
-	xstart = 1;
-	for (int y = 0; y < resolution; y++)
+	for (int i = 0; i < sizeof(indicesArray); i++)
 	{
-		for (int x = 0; x < resolution; x++)
-		{
-			vertices[v].pos = XMFLOAT3(xstart, ystart - yincrement, 1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart - xincrement, ystart, 1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart, ystart, 1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart, ystart - yincrement, 1.0f); 
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart - xincrement, ystart - yincrement, 1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart - xincrement, ystart, 1.0f);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			xstart -= xincrement;
-			txu += txuinc;
-
-		}
-
-		ystart -= yincrement;
-		xstart = 1;
-
-		txu = 0;
-		txv += txvinc;
-
-	}
-
-	txv = 0;
-
-	ystart = 1;
-	xstart = -1;
-	for (int y = 0; y < resolution; y++)
-	{
-		for (int x = 0; x < resolution; x++)
-		{
-			vertices[v].pos = XMFLOAT3(1.0f, ystart - yincrement, xstart); 
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(1.0f, ystart, xstart + xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(1.0f, ystart, xstart);
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(1.0f, ystart - yincrement, xstart);
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(1.0f, ystart - yincrement, xstart + xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(1.0f, ystart, xstart + xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			xstart += xincrement;
-			txu += txuinc;
-
-		}
-
-		ystart -= yincrement;
-		xstart = -1;
-		txu = 0;
-		txv += txvinc;
-	}
-
-	txv = 0;
-
-	ystart = 1;
-	xstart = 1;
-	for (int y = 0; y < resolution; y++)
-	{
-		for (int x = 0; x < resolution; x++)
-		{
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart - yincrement, xstart);
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart, xstart - xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart, xstart);
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart - yincrement, xstart);
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart - yincrement, xstart - xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(-1.0f, ystart, xstart - xincrement);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			xstart -= xincrement;
-			txu += txuinc;
-		}
-
-		ystart -= yincrement;
-		xstart = 1;
-		txu = 0;
-		txv += txvinc;
-	}
-
-	txv = 0;
-
-	ystart = 1;
-	xstart = -1;
-
-	for (int y = 0; y < resolution; y++)
-	{
-		for (int x = 0; x < resolution; x++)
-		{
-			vertices[v].pos = XMFLOAT3(xstart, 1.0f, ystart - yincrement);
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, 1.0f, ystart);
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			vertices[v].pos = XMFLOAT3(xstart, 1.0f, ystart);  // Top left.	-1.0, 1.0
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			//0
-			vertices[v].pos = XMFLOAT3(xstart, 1.0f, ystart - yincrement);  // Bottom left. -1. -1. 0
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			//3
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, 1.0f, ystart - yincrement);  // Bottom right.	1.0, -1.0, 0.0
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			//2
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, 1.0f, ystart);  // Top right.	1.0, 1.0 0.0
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			// increment
-			xstart += xincrement;
-			//ystart -= yincrement;
-			txu += txuinc;
-		}
-
-		ystart -= yincrement;
-		xstart = -1;
-		txu = 0;
-		txv += txvinc;
-	}
-
-	txv = 0;
-
-	//bottom face
-	ystart = -1;
-	xstart = -1;
-
-	for (int y = 0; y < resolution; y++)	// for each quad in the y direction
-	{
-		for (int x = 0; x < resolution; x++)	// for each quad in the x direction
-		{
-			// Load the vertex array with data.
-			//0
-			vertices[v].pos = XMFLOAT3(xstart, -1.0f, ystart + yincrement);  // Bottom left. -1. -1. 0
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);			v++;
-			i++;
-
-
-			//2
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, -1.0f, ystart);  // Top right.	1.0, 1.0 0.0
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);			v++;
-			i++;
-
-			//1
-			vertices[v].pos = XMFLOAT3(xstart, -1.0f, ystart);  // Top left.	-1.0, 1.0
-			vertices[v].texCoord = XMFLOAT2(txu, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);			v++;
-			i++;
-
-			//0
-			vertices[v].pos = XMFLOAT3(xstart, -1.0f, ystart + yincrement);  // Bottom left. -1. -1. 0
-			vertices[v].texCoord = XMFLOAT2(txu, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);			v++;
-			i++;
-
-			//3
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, -1.0f, ystart + yincrement);  // Bottom right.	1.0, -1.0, 0.0
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv + txvinc);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);			v++;
-			i++;
-
-			//2
-			vertices[v].pos = XMFLOAT3(xstart + xincrement, -1.0f, ystart);  // Top right.	1.0, 1.0 0.0
-			vertices[v].texCoord = XMFLOAT2(txu + txuinc, txv);
-			vertices[v].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-			indices[i] = i;
-			verticesVector.push_back(vertices[v]);
-			indicesVector.push_back(indices[i]);
-			v++;
-			i++;
-
-			// increment
-			xstart += xincrement;
-			//ystart -= yincrement;
-			txu += txuinc;
-		}
-
-		ystart += yincrement;
-		xstart = -1;
-		txu = 0;
-		txv += txvinc;
+		indicesVector.push_back(indicesArray[i]);
 	}
 	
-
-	/*
-	// Set up the description of the static vertex buffer.
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex3D) * vertexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = vertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
-	// Now create the vertex buffer.
-	device->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
-
-	// Set up the description of the static index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-	// Create the index buffer.
-	device->CreateBuffer(&indexBufferDesc, &indexData, &indexBuffer);
-	*/
-	// Release the arrays now that the vertex and index buffers have been created and loaded.
 	ReturnedData shapeData;
 	shapeData.Indices = indicesVector;
 	shapeData.Vertices = verticesVector;
-	return shapeData;
 	
-	delete[] vertices;
-	vertices = 0;
+	delete vertices;
+	delete indices;
 
-	delete[] indices;
-	indices = 0;
-}
-
-int CubeMesh::GetIndexCount()
-{
-	return indexCount;
+	return shapeData;
 }

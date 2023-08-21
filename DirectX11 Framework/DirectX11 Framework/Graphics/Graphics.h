@@ -14,7 +14,7 @@
 #include "GameObjects/Camera2D.h"
 #include "GameObjects/Sprite.h"
 #include "GameObjects/Primitives/CubeMesh.h"
-#include ".\GameObjects\PrimitiveGameObject.h"
+#include ".\GameObjects\Primitives\SphereMesh.h"
 
 class Graphics
 {
@@ -29,6 +29,7 @@ public:
 	Light light;
 	Sprite sprite;
 	CubeMesh cube;
+	SphereMesh skyBox;
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -71,6 +72,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> grassTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> brickTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cowTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> skyboxTexture;
 
 	int windowWidth = 0;
 	int windowHeight = 0;

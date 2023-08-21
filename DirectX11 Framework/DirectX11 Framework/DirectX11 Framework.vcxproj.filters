@@ -171,6 +171,9 @@
     <ClCompile Include="Graphics\GameObjects\PrimitiveGameObject.cpp">
       <Filter>Source Files\Graphics\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\Primitives\SphereMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse\MouseClass.h">
@@ -295,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\GameObjects\PrimitiveGameObject.h">
       <Filter>Header Files\Graphics\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\Primitives\SphereMesh.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

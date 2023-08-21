@@ -96,6 +96,7 @@ void Graphics::RenderFrame()
 
     }
     { // Cow
+        this->deviceContext->PSSetShaderResources(0, 1, this->cowTexture.GetAddressOf());
         cowModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
         cowModel.SetPosition(0,0,0);
         cowModel.SetScale(0.05,0.05,0.05);
@@ -117,21 +118,21 @@ void Graphics::RenderFrame()
             light.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
         }
     }
-
-    //Primitive Shapes
-    if (enableWireframe) {
-        deviceContext->RSSetState(rasterizerState_Wireframe_CullFront.Get());
-    }
-    else if (!enableWireframe) {
-        deviceContext->RSSetState(rasterizerState_CullFront.Get());
-    }
     { // Cube
         this->deviceContext->PSSetShaderResources(0, 1, this->brickTexture.GetAddressOf());
-
         cube.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
         cube.SetPosition(translationOffset[0], translationOffset[1], translationOffset[2]);
         cube.SetScale(scaleOffset[0], scaleOffset[1], scaleOffset[2]);
     }
+
+    { // Sphere
+        deviceContext->RSSetState(rasterizerState_CullFront.Get());
+        this->deviceContext->PSSetShaderResources(0, 1, this->skyboxTexture.GetAddressOf());
+        skyBox.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
+        skyBox.SetPosition(Camera3D.GetPositionFloat3());
+        skyBox.SetScale(25,25,25);
+    }
+
     
     //Draw Text
     static int fpsCounter = 0;
@@ -418,58 +419,68 @@ bool Graphics::InitializeShaders()
 bool Graphics::IntiializeScene()
 {
     try {
-    
-    //Load Textures
-    HRESULT hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\DK.png", nullptr, kongTexture.GetAddressOf());
-    COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\grass.jpg", nullptr, grassTexture.GetAddressOf());
-    COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
+        //Load Textures
+        HRESULT hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\DK.png", nullptr, kongTexture.GetAddressOf());
+        COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\brick.jpg", nullptr, brickTexture.GetAddressOf());
-    COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
-    
-    //Initialize vertex shader constant buffer
-    hr = cb_vs_vertexshader.Initialize(device.Get(), deviceContext.Get());
-    COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
+        hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\grass.jpg", nullptr, grassTexture.GetAddressOf());
+        COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    //Initialize pixel shader constant buffer
-    hr = cb_ps_light.Initialize(device.Get(), deviceContext.Get());
-    COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
-    
-	hr = cb_vs_vertexshader_2d.Initialize(device.Get(), deviceContext.Get());
-	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
-    
-    cb_ps_light.data.ambientLightColour = XMFLOAT3(1,1,1);
-	cb_ps_light.data.ambientLightStrength = 1.0f;
+        hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\brick.jpg", nullptr, brickTexture.GetAddressOf());
+        COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    //initialize models
-    if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
-        return false;
-    
-    //initialize models
-    if (!nanosuitModel.Initialize("Data\\Objects\\nanosuit\\nanosuit.obj", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
-        return false;
-    //initialize models
-    if (!cowModel.Initialize("Data\\Objects\\cow.obj", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
-        return false;
+        hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\cowbase.png", nullptr, cowTexture.GetAddressOf());
+        COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertexshader))
-        return false;
+        hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\skybox.jpg", nullptr, skyboxTexture.GetAddressOf());
+        COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
-    if (!sprite.Initialize(this->device.Get(), this->deviceContext.Get(), 256, 256, "Data/Textures/DK.png", cb_vs_vertexshader_2d))
-        return false;
-        
-	sprite.SetPosition(XMFLOAT3(windowWidth / 2 - sprite.GetWidth() / 2, windowHeight / 2 - sprite.GetHeight() / 2, 0.0f));
-    Camera3D.SetPosition(0.0f, 0.0f, -2.0f);
-    Camera3D.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
+        //Initialize vertex shader constant buffer
+        hr = cb_vs_vertexshader.Initialize(device.Get(), deviceContext.Get());
+        COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
-	camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
-    
-    if (!cube.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
-       return false;
+        //Initialize pixel shader constant buffer
+        hr = cb_ps_light.Initialize(device.Get(), deviceContext.Get());
+        COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
+
+        hr = cb_vs_vertexshader_2d.Initialize(device.Get(), deviceContext.Get());
+        COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
+
+        cb_ps_light.data.ambientLightColour = XMFLOAT3(1, 1, 1);
+        cb_ps_light.data.ambientLightStrength = 1.0f;
+
+        //initialize models
+        if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
+            return false;
+
+        //initialize models
+        if (!nanosuitModel.Initialize("Data\\Objects\\nanosuit\\nanosuit.obj", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
+            return false;
+        //initialize models
+        if (!cowModel.Initialize("Data\\Objects\\cow.obj", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
+            return false;
+
+        if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertexshader))
+            return false;
+
+        if (!sprite.Initialize(this->device.Get(), this->deviceContext.Get(), 256, 256, "Data/Textures/DK.png", cb_vs_vertexshader_2d))
+            return false;
+
+        sprite.SetPosition(XMFLOAT3(windowWidth / 2 - sprite.GetWidth() / 2, windowHeight / 2 - sprite.GetHeight() / 2, 0.0f));
+        Camera3D.SetPosition(0.0f, 0.0f, -2.0f);
+        Camera3D.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.f);
+
+        camera2D.SetProjectionValues(windowWidth, windowHeight, 0.0f, 1.0f);
+
+        if (!cube.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
+            return false;
+        }
+
+        if (!skyBox.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
+            return false;
+        }
     }
-}
     catch (COMException & exception) {
         ErrorLogger::Log(exception);
         return false;
