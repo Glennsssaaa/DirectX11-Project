@@ -27,3 +27,13 @@ struct CB_PS_colourshader {
 	DirectX::XMFLOAT4 colour;
 };
 
+struct CB_PS_boxblur {
+	int grayScaleToggle;
+	DirectX::XMFLOAT3 padding;
+};
+
+struct CB_VS_boxblur {
+	DirectX::XMMATRIX worldMatrix;
+	DirectX::XMMATRIX viewMatrix;
+	DirectX::XMMATRIX projectionMatrix;
+};

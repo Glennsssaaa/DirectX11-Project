@@ -177,6 +177,9 @@
     <ClCompile Include="Graphics\GameObjects\Primitives\PlaneMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\GameObjects\OrthographicPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse\MouseClass.h">
@@ -306,6 +309,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\GameObjects\Primitives\PlaneMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GameObjects\OrthographicPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

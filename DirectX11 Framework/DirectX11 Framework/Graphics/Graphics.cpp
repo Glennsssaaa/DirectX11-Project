@@ -31,10 +31,15 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 void Graphics::RenderFrame()
 {
     ShaderUpdate();
+    deviceContext->OMSetDepthStencilState(depthStencilState.Get(), 0);
 
     RenderObjects();
-
+    
     RenderGUI();
+    deviceContext->IASetInputLayout(vertexshader_2d.GetInputLayout());
+    deviceContext->PSSetShader(pixelshader_2d.GetShader(), NULL, 0);
+    deviceContext->VSSetShader(vertexshader_2d.GetShader(), NULL, 0);
+	//orthoPlane.Draw(camera2D.GetWorldMatrix()*camera2D.GetOrthoMatrix());
     
     //Enable VSYNC - 1
     swapchain->Present(1, NULL);
@@ -64,30 +69,20 @@ void Graphics::ShaderUpdate()
 
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
+    deviceContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+    
     if (enableWireframe) {
         deviceContext->RSSetState(rasterizerState_Wireframe.Get());
     }
     else if (!enableWireframe) {
         deviceContext->RSSetState(rasterizerState.Get());
     }
-    deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
-    deviceContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 
-
-    //Stencil Mask
-    /*deviceContext->OMSetDepthStencilState(depthStencilState_drawMask.Get(), 0);
-    deviceContext->IASetInputLayout(vertexshader_2d.GetInputLayout());
-    deviceContext->PSSetShader(pixelshader_2d.GetShader(), NULL, 0);
-    deviceContext->VSSetShader(vertexshader_2d.GetShader(), NULL, 0);
-    sprite.Draw(camera2D.GetWorldMatrix() * camera2D.GetOrthoMatrix());
-    //Stencil Mask
-    deviceContext->OMSetDepthStencilState(depthStencilState_applyMask.Get(), 0);
-    */
 }
 
 void Graphics::RenderObjects()
 {
-    deviceContext->OMSetDepthStencilState(depthStencilState.Get(), 0);
     deviceContext->IASetInputLayout(vertexshader.GetInputLayout());
     deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
     deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
@@ -281,10 +276,41 @@ bool Graphics::InitializeDirectX(HWND hwnd)
     //Create depth stencil state
     CD3D11_DEPTH_STENCIL_DESC depthStencilDesc(D3D11_DEFAULT);
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-
+    ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+    depthStencilDesc.DepthEnable = true;
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    depthStencilDesc.StencilEnable = true;
+    depthStencilDesc.StencilReadMask = 0xFF;
+    depthStencilDesc.StencilWriteMask = 0xFF;
+    depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+    depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+    depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
     hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilState.GetAddressOf());
     COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil state");
     
+    D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+    depthDisabledStencilDesc.DepthEnable = false;
+    depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    depthDisabledStencilDesc.StencilEnable = true;
+    depthDisabledStencilDesc.StencilReadMask = 0xFF;
+    depthDisabledStencilDesc.StencilWriteMask = 0xFF;
+    depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+    depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+    depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    hr = device->CreateDepthStencilState(&depthDisabledStencilDesc, depthStencilDisabled.GetAddressOf());
+    COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil state");
 
     //Draw Mask
     CD3D11_DEPTH_STENCIL_DESC depthStencilDesc_drawMask(D3D11_DEFAULT);
@@ -436,7 +462,7 @@ bool Graphics::InitializeShaders()
     if (!pixelshader_colour.Initialize(device, shaderfolder + L"colourshader_ps.cso")) {
         return false;
     }
-
+    
     //2D Shaders
     D3D11_INPUT_ELEMENT_DESC layout2D[] = {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -498,7 +524,6 @@ bool Graphics::IntiializeScene()
         hr = cb_ps_colourshader.Initialize(device.Get(), deviceContext.Get());
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
-
         //initialize models
         if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
             return false;
@@ -533,6 +558,12 @@ bool Graphics::IntiializeScene()
         if (!ground.Initialize(this->device.Get(), this->deviceContext.Get(), cb_vs_vertexshader)) {
             return false;
         }
+
+		if (!orthoPlane.Initialize(this->device.Get(), this->deviceContext.Get(), windowWidth, windowHeight, cb_vs_vertexshader_2d)) {
+			return false;
+		}
+
+
         ground.SetPosition(0, -5, 0);
         ground.SetScale(100.f, 1.f, 100.f);
         cube.SetPosition(0, 0, 50);

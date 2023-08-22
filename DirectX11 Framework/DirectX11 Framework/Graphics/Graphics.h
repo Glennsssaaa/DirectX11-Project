@@ -16,6 +16,7 @@
 #include "GameObjects/Primitives/CubeMesh.h"
 #include ".\GameObjects\Primitives\SphereMesh.h"
 #include "GameObjects/Primitives/PlaneMesh.h"
+#include "GameObjects/OrthographicPlane.h"
 class Graphics
 {
 public:
@@ -40,6 +41,8 @@ public:
 	int windowWidth;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;
 	XMFLOAT3 mousePos;
+	OrthographicPlane orthoPlane;
+	
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -67,11 +70,11 @@ private:
 	//Light Shader
 	PixelShader pixelshader_nolight;
 	ConstantBuffer<CB_PS_light> cb_ps_light;
-
-
+	
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilDisabled;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_drawMask;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_applyMask;
 
