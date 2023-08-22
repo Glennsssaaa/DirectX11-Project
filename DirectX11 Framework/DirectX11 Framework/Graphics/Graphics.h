@@ -21,6 +21,7 @@ class Graphics
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
+	void ShaderUpdate();
 	void RenderObjects();
 	void RenderGUI();
 	void ObjectSelect();
@@ -48,16 +49,24 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView;
 
+	//3D Shader
 	VertexShader vertexshader;
 	PixelShader pixelshader;
-	PixelShader pixelshader_nolight;
+	ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
 
+	//2D Shader
 	PixelShader pixelshader_2d;
 	VertexShader vertexshader_2d;
-
-	ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
-	ConstantBuffer<CB_PS_light> cb_ps_light;
 	ConstantBuffer<CB_VS_vertexshader_2d> cb_vs_vertexshader_2d;
+
+	//Colour Shader
+	PixelShader pixelshader_colour;
+	VertexShader vertexshader_colour;
+	ConstantBuffer<CB_PS_colourshader> cb_ps_colourshader;
+
+	//Light Shader
+	PixelShader pixelshader_nolight;
+	ConstantBuffer<CB_PS_light> cb_ps_light;
 
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;

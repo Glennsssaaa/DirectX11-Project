@@ -30,17 +30,35 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
+    ShaderUpdate();
+
+    RenderObjects();
+
+    RenderGUI();
+    
+    //Enable VSYNC - 1
+    swapchain->Present(1, NULL);
+}
+
+void Graphics::ShaderUpdate()
+{
+    //Declare States
+    float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
+
+    //Setup light data
     cb_ps_light.data.dynamicLightColour = light.lightColour;
     cb_ps_light.data.dynamicLightStrength = light.lightStrength;
     cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
-	cb_ps_light.data.dynamicLightAttenuation_a = light.attenuation_a;
-	cb_ps_light.data.dynamicLightAttenuation_b = light.attenuation_b;
-	cb_ps_light.data.dynamicLightAttenuation_c = light.attenuation_c;
-
+    cb_ps_light.data.dynamicLightAttenuation_a = light.attenuation_a;
+    cb_ps_light.data.dynamicLightAttenuation_b = light.attenuation_b;
+    cb_ps_light.data.dynamicLightAttenuation_c = light.attenuation_c;
     cb_ps_light.ApplyChanges();
+
+    //Setup colour data
+    cb_ps_colourshader.ApplyChanges();
+
     deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
-    //Declare States
-    float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
+
     deviceContext->ClearRenderTargetView(renderTargetView.Get(), bgcolor);
     deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -65,13 +83,6 @@ void Graphics::RenderFrame()
     //Stencil Mask
     deviceContext->OMSetDepthStencilState(depthStencilState_applyMask.Get(), 0);
     */
-
-    RenderObjects();
-
-    RenderGUI();
-    
-    //Enable VSYNC - 1
-    swapchain->Present(1, NULL);
 }
 
 void Graphics::RenderObjects()
@@ -81,16 +92,11 @@ void Graphics::RenderObjects()
     deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
     deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
-
     { // Car
         carModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
     }
     { // Nanosuit
         nanosuitModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
-    }
-    { // Cow
-        this->deviceContext->PSSetShaderResources(0, 1, this->cowTexture.GetAddressOf());
-        cowModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
     }
     {
         deviceContext->PSSetShader(pixelshader_nolight.GetShader(), NULL, 0);
@@ -109,6 +115,7 @@ void Graphics::RenderObjects()
             light.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
         }
     }
+    deviceContext->PSSetShader(pixelshader_colour.GetShader(), NULL, 0);
 
     //Primitives
     { // Cube
@@ -116,7 +123,7 @@ void Graphics::RenderObjects()
         this->deviceContext->PSSetShaderResources(0, 1, this->brickTexture.GetAddressOf());
         cube.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
     }
-    { // Cube
+    { // Ground
         this->deviceContext->PSSetShaderResources(0, 1, this->grassTexture.GetAddressOf());
         ground.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
     }
@@ -125,6 +132,14 @@ void Graphics::RenderObjects()
         deviceContext->RSSetState(rasterizerState_CullFront.Get());
         this->deviceContext->PSSetShaderResources(0, 1, this->skyboxTexture.GetAddressOf());
         skyBox.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
+    }
+    
+    { // Car
+        deviceContext->PSSetConstantBuffers(0, 1, cb_ps_colourshader.GetAddressOf());
+        deviceContext->IASetInputLayout(vertexshader_colour.GetInputLayout());
+        deviceContext->VSSetShader(vertexshader_colour.GetShader(), NULL, 0);
+        deviceContext->PSSetShader(pixelshader_colour.GetShader(), NULL, 0);
+        cowModel.Draw(Camera3D.GetViewMatrix() * Camera3D.GetProjectionMatrix());
     }
 }
 
@@ -176,14 +191,17 @@ void Graphics::RenderGUI()
 	ImGui::Text("Mouse Position: (%.1f,%.1f)", mousePos.x, mousePos.y);
     ImGui::End();
     ImGui::Begin("Light Controls");
+    //Ambient Light
     ImGui::DragFloat3("Ambient Light Colour", &cb_ps_light.data.ambientLightColour.x, 0.01f, 0.0f, 1.0f);
     ImGui::DragFloat("Ambient Light Strength", &cb_ps_light.data.ambientLightStrength, 0.01f, 0.0f, 1.0f);
-
+    //Diffuse Light
     ImGui::DragFloat3("Diffuse Light Colour", &light.lightColour.x, 0.01f, 0.0f, 1.0f);
     ImGui::DragFloat("Diffuse Light Strength", &light.lightStrength, 0.01f, 0.0f, 20.0f);
     ImGui::DragFloat("Light Attenuation A", &light.attenuation_a, 0.1f, 0.1f, 100.0f);
     ImGui::DragFloat("Light Attenuation B", &light.attenuation_b, 0.1f, 0.1f, 100.0f);
     ImGui::DragFloat("Light Attenuation C", &light.attenuation_c, 0.1f, 0.1f, 100.0f);
+
+    ImGui::DragFloat("Car alpha: %f", &cb_ps_colourshader.data.colour.z, 0.01f,0.f,1.0f);
 
     ImGui::Checkbox("Enable Flashlight", &enableFlashlight);
     ImGui::End();
@@ -411,6 +429,14 @@ bool Graphics::InitializeShaders()
         return false;
     }
 
+	if (!vertexshader_colour.Initialize(device, shaderfolder + L"colourshader_vs.cso", layout3D, numElements3D)) {
+		return false;
+	}
+
+    if (!pixelshader_colour.Initialize(device, shaderfolder + L"colourshader_ps.cso")) {
+        return false;
+    }
+
     //2D Shaders
     D3D11_INPUT_ELEMENT_DESC layout2D[] = {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -450,19 +476,28 @@ bool Graphics::IntiializeScene()
         hr = DirectX::CreateWICTextureFromFile(device.Get(), L"Data\\Textures\\skybox.jpg", nullptr, skyboxTexture.GetAddressOf());
         COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file");
 
+
+        //Texture Shader
         //Initialize vertex shader constant buffer
         hr = cb_vs_vertexshader.Initialize(device.Get(), deviceContext.Get());
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
+        //Light Shader
         //Initialize pixel shader constant buffer
         hr = cb_ps_light.Initialize(device.Get(), deviceContext.Get());
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
+        //2d Shader
         hr = cb_vs_vertexshader_2d.Initialize(device.Get(), deviceContext.Get());
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
         cb_ps_light.data.ambientLightColour = XMFLOAT3(1, 1, 1);
         cb_ps_light.data.ambientLightStrength = 1.0f;
+
+        //Colour Shader
+        hr = cb_ps_colourshader.Initialize(device.Get(), deviceContext.Get());
+        COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
+
 
         //initialize models
         if (!carModel.Initialize("Data\\Objects\\Samples\\dodge_challenger.fbx", device.Get(), deviceContext.Get(), cb_vs_vertexshader))
@@ -518,6 +553,7 @@ bool Graphics::IntiializeScene()
     return true;
 }
 
+//Needs work
 void Graphics::ObjectSelect()
 {
 	XMVECTOR mousePosVector = DirectX::XMLoadFloat3(&mousePos);

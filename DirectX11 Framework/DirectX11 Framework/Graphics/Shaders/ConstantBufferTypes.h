@@ -22,3 +22,8 @@ struct CB_PS_light {
 	float dynamicLightAttenuation_b;
 	float dynamicLightAttenuation_c;
 };
+
+struct CB_PS_colourshader {
+	DirectX::XMFLOAT4 colour;
+};
+
